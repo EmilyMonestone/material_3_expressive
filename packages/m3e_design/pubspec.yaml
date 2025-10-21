@@ -1,0 +1,16 @@
+name: m3e_design
+description: Material 3 Expressive design language for Flutter (tokens, ThemeExtension, motion).
+version: 0.1.0
+publish_to: none
+repository: https://example.com/your-repo
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter

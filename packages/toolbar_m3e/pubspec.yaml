@@ -1,0 +1,18 @@
+name: toolbar_m3e
+description: Material 3 Expressive Toolbars for Flutter with token-driven colors, shapes, density, and overflow handling.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  m3e_design:
+    path: ../m3e_design
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter

@@ -7,6 +7,24 @@
 .buildlog/
 .history
 
+# Other
+.dart_tool/
+.packages
+.melos_tool
+build/
+ios/
+android/
+macos/
+windows/
+linux/
+web/
+.idea/
+.vscode/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock
+coverage/
+
 
 
 # Flutter repo-specific

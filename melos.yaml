@@ -1,0 +1,19 @@
+name: m3e
+packages:
+  - "packages/*"
+  - "apps/*"
+
+command:
+  bootstrap:
+    usePubspecOverrides: true
+
+scripts:
+  bootstrap: melos bootstrap
+  clean: melos exec -- flutter clean
+  get: melos exec -- flutter pub get
+  format: melos exec -- dart format --set-exit-if-changed .
+  analyze: melos exec -- dart analyze --fatal-infos --fatal-warnings
+  test: melos exec -- flutter test --coverage
+  create:
+    run: dart run tool/create_component.dart
+    description: Scaffold a new [component]_m3e package (melos run create -- name=badge)
