@@ -1,144 +1,212 @@
 import 'package:flutter/material.dart';
-import 'enums.dart';
-import 'button_theme_m3e.dart';
 
-class ButtonM3E extends StatelessWidget {
+import 'button_tokens_adapter.dart';
+import 'enums.dart';
+
+class ButtonM3E extends StatefulWidget {
   const ButtonM3E({
     super.key,
-    this.onPressed,
-    this.onLongPress,
-    this.leading,
-    this.trailing,
-    this.label,
-    this.labelText,
-    this.expand = false,
-    this.variant = ButtonM3EVariant.filled,
-    this.size = ButtonM3ESize.medium,
-    this.shapeFamily = ButtonM3EShapeFamily.round,
-    this.density = ButtonM3EDensity.regular,
-    this.semanticLabel,
-  }) : assert(label != null || labelText != null, 'Provide either label or labelText');
+    required this.onPressed,
+    required this.label,
+    this.icon,
+    this.style = ButtonM3EStyle.filled,
+    this.size = ButtonM3ESize.sm,
+    this.shape = ButtonM3EShape.round,
+    this.selected = false,
+    this.toggleable = false,
+    this.onSelectedChange,
+    this.smallPaddingDeprecated24 = false,
+    this.enabled = true,
+    this.statesController,
+  });
 
   final VoidCallback? onPressed;
-  final VoidCallback? onLongPress;
-  final Widget? leading;
-  final Widget? trailing;
-  final Widget? label;
-  final String? labelText;
-  final bool expand;
-
-  final ButtonM3EVariant variant;
+  final Widget label;
+  final Widget? icon;
+  final ButtonM3EStyle style;
   final ButtonM3ESize size;
-  final ButtonM3EShapeFamily shapeFamily;
-  final ButtonM3EDensity density;
-  final String? semanticLabel;
+  final ButtonM3EShape shape;
+  final bool selected;
+  final bool toggleable;
+  final ValueChanged<bool>? onSelectedChange;
+  final bool smallPaddingDeprecated24;
+  final bool enabled;
+  final WidgetStatesController? statesController;
+
+  @override
+  State<ButtonM3E> createState() => _ButtonM3EState();
+}
+
+class _ButtonM3EState extends State<ButtonM3E> {
+  late WidgetStatesController _statesController;
+
+  @override
+  void initState() {
+    super.initState();
+    _statesController = widget.statesController ?? WidgetStatesController();
+    _syncSelectedToController();
+  }
+
+  @override
+  void didUpdateWidget(covariant ButtonM3E oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selected != widget.selected && widget.toggleable) {
+      _syncSelectedToController();
+    }
+  }
+
+  void _syncSelectedToController() {
+    _statesController.update(WidgetState.selected, widget.selected);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final t = ButtonTokensAdapter(context);
-    final m = t.metrics(density);
-    final shape = t.shape(shapeFamily);
+    final tokens = ButtonTokensAdapter(context,
+        smallPaddingDeprecated24: widget.smallPaddingDeprecated24);
+    final m = tokens.measurements(widget.size);
+    final style = _resolveStyle(tokens, m);
 
-    final (minH, pad) = switch (size) {
-      ButtonM3ESize.small => (m.heightSmall, m.paddingSmall),
-      ButtonM3ESize.medium => (m.heightMedium, m.paddingMedium),
-      ButtonM3ESize.large => (m.heightLarge, m.paddingLarge),
-    };
+    final onPressed = widget.enabled
+        ? () {
+            if (widget.toggleable) {
+              final newVal = !widget.selected;
+              widget.onSelectedChange?.call(newVal);
+              if (widget.onSelectedChange == null) {
+                _statesController.update(WidgetState.selected, newVal);
+                setState(() {});
+              }
+            }
+            widget.onPressed?.call();
+          }
+        : null;
 
-    final style = _styleFor(context, t, shape, minH, pad);
+    final child = _buildContent(m);
 
-    final childLabel = label ?? Text(labelText!, overflow: TextOverflow.ellipsis);
-    final content = _buildContent(context, t, childLabel);
-
-    final Widget btn = switch (variant) {
-      ButtonM3EVariant.filled => FilledButton(style: style, onPressed: onPressed, onLongPress: onLongPress, child: content),
-      ButtonM3EVariant.tonal => FilledButton.tonal(style: style, onPressed: onPressed, onLongPress: onLongPress, child: content),
-      ButtonM3EVariant.outlined => OutlinedButton(style: style, onPressed: onPressed, onLongPress: onLongPress, child: content),
-      ButtonM3EVariant.text => TextButton(style: style, onPressed: onPressed, onLongPress: onLongPress, child: content),
-      ButtonM3EVariant.elevated => ElevatedButton(style: style, onPressed: onPressed, onLongPress: onLongPress, child: content),
-    };
-
-    if (!expand && semanticLabel == null) return btn;
-    final wrapped = expand ? SizedBox(width: double.infinity, child: btn) : btn;
-    if (semanticLabel == null) return wrapped;
-    return Semantics(
-      button: true,
-      label: semanticLabel,
-      child: wrapped,
-    );
-  }
-
-  ButtonStyle _styleFor(BuildContext context, ButtonTokensAdapter t, OutlinedBorder shape, double minH, EdgeInsetsGeometry pad) {
-    switch (variant) {
-      case ButtonM3EVariant.filled:
-        return FilledButton.styleFrom(
-          backgroundColor: t.bgFilled(),
-          foregroundColor: t.fgFilled(),
-          textStyle: t.labelStyle(),
-          minimumSize: Size(0, minH),
-          padding: pad,
-          shape: shape,
+    switch (widget.style) {
+      case ButtonM3EStyle.filled:
+        return FilledButton(
+          style: style,
+          onPressed: onPressed,
+          statesController: _statesController,
+          child: child,
         );
-      case ButtonM3EVariant.tonal:
-        return FilledButton.styleFrom(
-          backgroundColor: t.bgTonal(),
-          foregroundColor: t.fgTonal(),
-          textStyle: t.labelStyle(),
-          minimumSize: Size(0, minH),
-          padding: pad,
-          shape: shape,
+      case ButtonM3EStyle.tonal:
+        return FilledButton.tonal(
+          style: style,
+          onPressed: onPressed,
+          statesController: _statesController,
+          child: child,
         );
-      case ButtonM3EVariant.outlined:
-        return OutlinedButton.styleFrom(
-          foregroundColor: t.fgOutlined(),
-          textStyle: t.labelStyle(),
-          minimumSize: Size(0, minH),
-          padding: pad,
-          shape: shape,
-          side: BorderSide(color: t.borderOutlined()),
+      case ButtonM3EStyle.elevated:
+        return ElevatedButton(
+          style: style,
+          onPressed: onPressed,
+          statesController: _statesController,
+          child: child,
         );
-      case ButtonM3EVariant.text:
-        return TextButton.styleFrom(
-          foregroundColor: t.fgText(),
-          textStyle: t.labelStyle(),
-          minimumSize: Size(0, minH),
-          padding: pad,
-          shape: shape,
+      case ButtonM3EStyle.outlined:
+        return OutlinedButton(
+          style: style.copyWith(
+            side: WidgetStateProperty.resolveWith((states) {
+              final disabled = states.contains(WidgetState.disabled);
+              return BorderSide(
+                  color:
+                      tokens.outline().withValues(alpha: disabled ? 0.12 : 1),
+                  width: 1);
+            }),
+          ),
+          onPressed: onPressed,
+          statesController: _statesController,
+          child: child,
         );
-      case ButtonM3EVariant.elevated:
-        return ElevatedButton.styleFrom(
-          backgroundColor: t.bgElevated(),
-          foregroundColor: t.fgElevated(),
-          textStyle: t.labelStyle(),
-          minimumSize: Size(0, minH),
-          padding: pad,
-          shape: shape,
-          elevation: _elevationFor(context, t),
+      case ButtonM3EStyle.text:
+        return TextButton(
+          style: style,
+          onPressed: onPressed,
+          statesController: _statesController,
+          child: child,
         );
     }
   }
 
-  double _elevationFor(BuildContext context, ButtonTokensAdapter t) {
-    // Simple mapping; can be themed further via tokens.
-    return 1.0;
-  }
-
-  Widget _buildContent(BuildContext context, ButtonTokensAdapter t, Widget childLabel) {
-    final style = t.labelStyle();
-    final text = DefaultTextStyle.merge(style: style, child: childLabel);
-    final hasLeading = leading != null;
-    final hasTrailing = trailing != null;
-
-    if (!hasLeading && !hasTrailing) return text;
-
+  Widget _buildContent(ButtonMeasurements m) {
+    final text = DefaultTextStyle.merge(child: widget.label);
+    if (widget.icon == null) return text;
     return Row(
       mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (hasLeading) ...[leading!, const SizedBox(width: 8)],
-        Flexible(child: text),
-        if (hasTrailing) ...[const SizedBox(width: 8), trailing!],
+        IconTheme.merge(
+          data: IconThemeData(size: m.iconSize),
+          child: widget.icon!,
+        ),
+        SizedBox(width: m.iconGap),
+        text,
       ],
+    );
+  }
+
+  OutlinedBorder _shapeFor(
+      Set<WidgetState> states, ButtonTokensAdapter tokens) {
+    final selected = states.contains(WidgetState.selected) || widget.selected;
+    final pressed = states.contains(WidgetState.pressed);
+
+    OutlinedBorder round = const StadiumBorder();
+    OutlinedBorder square = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(tokens.squareRadius(widget.size)),
+    );
+    OutlinedBorder pressedSquare = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(tokens.pressedRadius(widget.size)),
+    );
+
+    OutlinedBorder base = widget.shape == ButtonM3EShape.round ? round : square;
+    OutlinedBorder alt = widget.shape == ButtonM3EShape.round ? square : round;
+
+    if (selected && pressed) {
+      return OutlinedBorder.lerp(alt, pressedSquare, 0.5)!;
+    } else if (selected) {
+      return alt;
+    } else if (pressed) {
+      return OutlinedBorder.lerp(base, pressedSquare, 0.7)!;
+    }
+    return base;
+  }
+
+  ButtonStyle _resolveStyle(ButtonTokensAdapter tokens, ButtonMeasurements m) {
+    final fg = WidgetStateProperty.resolveWith<Color?>((states) {
+      final disabled = states.contains(WidgetState.disabled);
+      final color = tokens.foreground(widget.style);
+      return disabled ? color.withValues(alpha: 0.38) : color;
+    });
+
+    final bg = WidgetStateProperty.resolveWith<Color?>((states) {
+      final disabled = states.contains(WidgetState.disabled);
+      final color = tokens.container(widget.style);
+      if (widget.style == ButtonM3EStyle.outlined ||
+          widget.style == ButtonM3EStyle.text) {
+        return Colors.transparent;
+      }
+      return disabled ? color.withValues(alpha: .12) : color;
+    });
+
+    final elevation = WidgetStateProperty.resolveWith<double>((states) {
+      return tokens.elevation(widget.style, states);
+    });
+
+    final shape = WidgetStateProperty.resolveWith<OutlinedBorder>((states) {
+      return _shapeFor(states, tokens);
+    });
+
+    return ButtonStyle(
+      minimumSize: WidgetStateProperty.all(Size(48, m.height)),
+      padding:
+          WidgetStateProperty.all(EdgeInsets.symmetric(horizontal: m.hPadding)),
+      foregroundColor: fg,
+      backgroundColor: bg,
+      shape: shape,
+      elevation: elevation,
+      animationDuration: const Duration(milliseconds: 140),
+      visualDensity: VisualDensity.standard,
+      splashFactory: InkRipple.splashFactory,
     );
   }
 }

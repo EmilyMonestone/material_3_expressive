@@ -1,11 +1,12 @@
+
 name: button_m3e
-description: Material 3 Expressive Buttons for Flutter (filled, tonal, outlined, text, elevated) with M3E tokens.
+description: Material 3 Expressive Buttons for Flutter with 5 styles, 5 sizes, round/square shapes, and toggle selection.
 version: 0.1.0
 publish_to: none
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
-  flutter: ">=3.22.0"
+  flutter: ">=3.19.0"
 
 dependencies:
   flutter:
