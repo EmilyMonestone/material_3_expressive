@@ -23,15 +23,17 @@ class ProgressSection extends StatelessWidget {
             spacing: 16,
             runSpacing: 16,
             children: [
-              for (final s in ProgressM3ESize.values) ...[
-                CircularProgressM3E(
+              for (final s in CircularProgressM3ESize.values) ...[
+                CircularProgressIndicatorM3E(
                   size: s,
                   value: 0.4,
+                  shape: ProgressM3EShape.wavy,
                 ),
-                CircularProgressM3E(
-                    size: s,
-                    value: 0.6,
-                    showCenterLabel: s != ProgressM3ESize.small),
+                CircularProgressIndicatorM3E(
+                  size: s,
+                  value: 0.6,
+                  shape: ProgressM3EShape.wavy,
+                ),
               ],
             ],
           ),
@@ -45,17 +47,17 @@ class ProgressSection extends StatelessWidget {
             spacing: 16,
             runSpacing: 16,
             children: [
-              for (final s in ProgressM3ESize.values) ...[
-                CircularProgressM3E(
+              for (final s in CircularProgressM3ESize.values) ...[
+                CircularProgressIndicatorM3E(
                   size: s,
                   value: 0.4,
-                  shape: CircularBarShapeM3E.flat,
+                  shape: ProgressM3EShape.flat,
                 ),
-                CircularProgressM3E(
-                    size: s,
-                    shape: CircularBarShapeM3E.flat,
-                    value: 0.6,
-                    showCenterLabel: s != ProgressM3ESize.small),
+                CircularProgressIndicatorM3E(
+                  size: s,
+                  shape: ProgressM3EShape.flat,
+                  value: 0.6,
+                ),
               ],
             ],
           ),
@@ -69,14 +71,20 @@ class ProgressSection extends StatelessWidget {
             spacing: 16,
             runSpacing: 16,
             children: [
-              for (final v in LinearProgressM3EVariant.values)
-                LinearProgressM3E(
-                  minWidth: 220,
-                  variant: v,
-                  value: v == LinearProgressM3EVariant.determinate ? 0.6 : null,
-                  bufferValue:
-                      v == LinearProgressM3EVariant.buffer ? 0.8 : null,
+              SizedBox(
+                width: 250,
+                child: LinearProgressIndicatorM3E(
+                  value: null,
+                  shape: ProgressM3EShape.wavy,
                 ),
+              ),
+              SizedBox(
+                width: 250,
+                child: LinearProgressIndicatorM3E(
+                  value: 0.6,
+                  shape: ProgressM3EShape.wavy,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -89,15 +97,20 @@ class ProgressSection extends StatelessWidget {
             spacing: 16,
             runSpacing: 16,
             children: [
-              for (final v in LinearProgressM3EVariant.values)
-                LinearProgressM3E(
-                  minWidth: 220,
-                  variant: v,
-                  shape: LinearBarShapeM3E.flat,
-                  value: v == LinearProgressM3EVariant.determinate ? 0.6 : null,
-                  bufferValue:
-                      v == LinearProgressM3EVariant.buffer ? 0.8 : null,
+              SizedBox(
+                width: 250,
+                child: LinearProgressIndicatorM3E(
+                  value: null,
+                  shape: ProgressM3EShape.flat,
                 ),
+              ),
+              SizedBox(
+                width: 250,
+                child: LinearProgressIndicatorM3E(
+                  value: 0.6,
+                  shape: ProgressM3EShape.flat,
+                ),
+              ),
             ],
           ),
         ],

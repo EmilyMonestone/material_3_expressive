@@ -3,6 +3,7 @@ library m3e_collection;
 export 'package:app_bar_m3e/app_bar_m3e.dart';
 export 'package:button_group_m3e/button_group_m3e.dart';
 export 'package:button_m3e/button_m3e.dart';
+export 'package:expressive_refresh/expressive_refresh.dart';
 export 'package:fab_m3e/fab_m3e.dart';
 export 'package:icon_button_m3e/icon_button_m3e.dart';
 export 'package:loading_indicator_m3e/loading_indicator_m3e.dart';

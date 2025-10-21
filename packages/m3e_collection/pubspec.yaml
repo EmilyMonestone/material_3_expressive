@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   material_new_shapes: ^1.0.0
+  expressive_refresh: ^0.1.2
   m3e_design:
     path: ../m3e_design
   icon_button_m3e:

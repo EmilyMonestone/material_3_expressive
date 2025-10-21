@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  dynamic_color: ^1.8.1
 
 dev_dependencies:
   flutter_test:

@@ -1,378 +1,165 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:m3e_design/m3e_design.dart';
 
+import '_tokens.dart';
 import 'enums.dart';
-import 'tokens_adapter.dart';
 
-class LinearProgressM3E extends StatefulWidget {
-  const LinearProgressM3E({
+/// Linear indicator that renders two **separate lanes** (active above, track below)
+/// with a fixed vertical gap. Lanes never overlap.
+class LinearProgressIndicatorM3E extends StatelessWidget {
+  const LinearProgressIndicatorM3E({
     super.key,
-    this.value,
-    this.bufferValue,
-    this.variant = LinearProgressM3EVariant.determinate,
-    this.size = ProgressM3ESize.medium,
-    this.emphasis = ProgressM3EEmphasis.primary,
-    this.density = ProgressM3EDensity.regular,
-    this.backgroundColor,
-    this.progressColor,
-    this.bufferColor,
-    this.semanticLabel,
-    this.minWidth = double.infinity,
-    this.strokeHeight,
-    this.borderRadius,
-    this.shape = LinearBarShapeM3E.wavy,
-    this.wavelength,
-    this.amplitude,
-    this.leftRightInset,
+    this.value, // null => indeterminate; animate phase externally
+    this.size = LinearProgressM3ESize.m,
+    this.shape = ProgressM3EShape.wavy,
+    this.activeColor,
+    this.trackColor,
+    this.phase = 0.0, // radians for wavy animation
+    this.inset = 4.0, // horizontal left inset
   });
 
   final double? value;
-  final double? bufferValue;
-  final LinearProgressM3EVariant variant;
-  final ProgressM3ESize size;
-  final ProgressM3EEmphasis emphasis;
-  final ProgressM3EDensity density;
-  final Color? backgroundColor;
-  final Color? progressColor;
-  final Color? bufferColor;
-  final String? semanticLabel;
-  final double minWidth;
-  final double? strokeHeight;
-  final BorderRadius? borderRadius;
-  final LinearBarShapeM3E shape;
-  final double? wavelength;
-  final double? amplitude;
-  final double? leftRightInset;
-
-  @override
-  State<LinearProgressM3E> createState() => _LinearProgressM3EState();
-}
-
-class _LinearProgressM3EState extends State<LinearProgressM3E>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _anim = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 1200),
-  )..repeat();
-
-  @override
-  void dispose() {
-    _anim.dispose();
-    super.dispose();
-  }
+  final LinearProgressM3ESize size;
+  final ProgressM3EShape shape;
+  final Color? activeColor;
+  final Color? trackColor;
+  final double phase;
+  final double inset;
 
   @override
   Widget build(BuildContext context) {
-    final tokens = ProgressTokensAdapter(context);
-    final m = tokens.metrics(widget.density);
+    final theme = Theme.of(context);
+    final m3e =
+        theme.extension<M3ETheme>() ?? M3ETheme.defaults(theme.colorScheme);
 
-    final height = switch (widget.size) {
-      ProgressM3ESize.small => widget.strokeHeight ?? m.linearThicknessSmall,
-      ProgressM3ESize.medium => widget.strokeHeight ?? m.linearThicknessMedium,
-      ProgressM3ESize.large => widget.strokeHeight ?? m.linearThicknessLarge,
-    };
+    // Farben aus m3e_design beziehen (überschreibbar per Props)
+    final active = activeColor ?? m3e.colors.primary;
+    final track = trackColor ?? m3e.colors.surfaceContainerHighest;
 
-    final track = widget.backgroundColor ?? tokens.trackColor();
-    final progress = widget.progressColor ?? tokens.color(widget.emphasis);
-    final buffer = widget.bufferColor ?? tokens.bufferColor(progress);
+    final spec = specForLinear(size: size, shape: shape);
 
-    final borderRadius =
-        widget.borderRadius ?? BorderRadius.circular(height / 2);
-    final inset = widget.leftRightInset ?? m.horizontalInset;
+    // Total height = active lane height (trackHeight or wavyHeight) + gap + trackHeight
+    final activeHeight = spec.isWavy
+        ? (spec.trackHeight + 2 * spec.waveAmplitude)
+        : spec.trackHeight;
+    final totalHeight = activeHeight + spec.gap + spec.trackHeight;
 
-    final content = Padding(
-      padding: EdgeInsets.symmetric(horizontal: inset),
-      child: _buildBar(
-          context, height, borderRadius, track, progress, buffer, tokens),
-    );
-
-    final bar = ClipRRect(
-      borderRadius: borderRadius,
+    return RepaintBoundary(
       child: SizedBox(
-        height: height,
-        width: widget.minWidth == double.infinity ? null : widget.minWidth,
-        child: content,
-      ),
-    );
-
-    if (widget.semanticLabel == null) return bar;
-    return Semantics(
-      label: widget.semanticLabel,
-      value: (widget.variant == LinearProgressM3EVariant.determinate &&
-              widget.value != null)
-          ? '${(widget.value!.clamp(0.0, 1.0) * 100).toStringAsFixed(0)}%'
-          : null,
-      child: bar,
-    );
-  }
-
-  Widget _buildBar(
-    BuildContext context,
-    double height,
-    BorderRadius borderRadius,
-    Color track,
-    Color progress,
-    Color buffer,
-    ProgressTokensAdapter tokens,
-  ) {
-    final variant = widget.variant;
-    final shape = widget.shape;
-
-    if (shape == LinearBarShapeM3E.flat) {
-      // Use standard LinearProgressIndicator behaviors.
-      if (variant == LinearProgressM3EVariant.indeterminate ||
-          (variant == LinearProgressM3EVariant.determinate &&
-              widget.value == null)) {
-        return LinearProgressIndicator(
-          color: progress,
-          backgroundColor: track,
-          minHeight: height,
-        );
-      } else if (variant == LinearProgressM3EVariant.query) {
-        return Transform(
-          alignment: Alignment.center,
-          transform: Matrix4.identity()..scale(-1.0, 1.0, 1.0),
-          child: LinearProgressIndicator(
-            color: progress,
-            backgroundColor: track,
-            minHeight: height,
+        height: totalHeight,
+        width: double.infinity,
+        child: CustomPaint(
+          painter: _LinearPainter(
+            value: value,
+            spec: spec,
+            active: activeColor ?? active,
+            track: trackColor ?? track,
+            phase: phase,
+            inset: inset,
           ),
-        );
-      } else if (variant == LinearProgressM3EVariant.buffer) {
-        return _BufferBar(
-          height: height,
-          track: track,
-          buffer: buffer,
-          progress: progress,
-          value: widget.value ?? 0.0,
-          bufferValue: widget.bufferValue ?? 0.0,
-        );
-      } else {
-        return LinearProgressIndicator(
-          value: (widget.value ?? 0.0).clamp(0.0, 1.0),
-          color: progress,
-          backgroundColor: track,
-          minHeight: height,
-        );
-      }
-    }
-
-    final wavelength =
-        widget.wavelength ?? tokens.metrics(widget.density).wavyWavelength;
-    final amplitude = widget.amplitude ??
-        tokens.metrics(widget.density).wavyAmplitudeFactor * height;
-
-    if (variant == LinearProgressM3EVariant.determinate &&
-        widget.value != null) {
-      return _WavyBar(
-        value: widget.value!.clamp(0.0, 1.0),
-        height: height,
-        wavelength: wavelength,
-        amplitude: amplitude.clamp(0.0, height / 2),
-        track: track,
-        fill: progress,
-      );
-    }
-
-    // Indeterminate / query / missing value → animate phase
-    return AnimatedBuilder(
-      animation: _anim,
-      builder: (context, _) {
-        final phase = 2 * math.pi * _anim.value;
-        final reverse = widget.variant == LinearProgressM3EVariant.query;
-        return _WavyIndeterminateBar(
-          height: height,
-          wavelength: wavelength,
-          amplitude: amplitude.clamp(0.0, height / 2),
-          track: track,
-          fill: progress,
-          phase: reverse ? -phase : phase,
-        );
-      },
-    );
-  }
-}
-
-class _BufferBar extends StatelessWidget {
-  const _BufferBar({
-    required this.height,
-    required this.track,
-    required this.buffer,
-    required this.progress,
-    required this.value,
-    required this.bufferValue,
-  });
-
-  final double height;
-  final Color track;
-  final Color buffer;
-  final Color progress;
-  final double value;
-  final double bufferValue;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final w = constraints.maxWidth;
-      final pv = (w.isFinite ? w : 0) * value.clamp(0.0, 1.0);
-      final bv = (w.isFinite ? w : 0) * bufferValue.clamp(0.0, 1.0);
-
-      Widget seg(double width, Color color) => Align(
-            alignment: Alignment.centerLeft,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeOutCubic,
-              width: width,
-              height: height,
-              color: color,
-            ),
-          );
-
-      return Stack(
-        fit: StackFit.passthrough,
-        children: [
-          ColoredBox(color: track),
-          seg(bv, buffer),
-          seg(pv, progress),
-        ],
-      );
-    });
-  }
-}
-
-class _WavyBar extends StatelessWidget {
-  const _WavyBar({
-    required this.value,
-    required this.height,
-    required this.wavelength,
-    required this.amplitude,
-    required this.track,
-    required this.fill,
-  });
-
-  final double value;
-  final double height;
-  final double wavelength;
-  final double amplitude;
-  final Color track;
-  final Color fill;
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _WavyPainter(
-        value: value,
-        height: height,
-        wavelength: wavelength,
-        amplitude: amplitude,
-        track: track,
-        fill: fill,
-        phase: 0,
-        indeterminate: false,
+        ),
       ),
     );
   }
 }
 
-class _WavyIndeterminateBar extends StatelessWidget {
-  const _WavyIndeterminateBar({
-    required this.height,
-    required this.wavelength,
-    required this.amplitude,
-    required this.track,
-    required this.fill,
-    required this.phase,
-  });
-
-  final double height;
-  final double wavelength;
-  final double amplitude;
-  final Color track;
-  final Color fill;
-  final double phase;
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _WavyPainter(
-        value: 0.6,
-        height: height,
-        wavelength: wavelength,
-        amplitude: amplitude,
-        track: track,
-        fill: fill,
-        phase: phase,
-        indeterminate: true,
-      ),
-    );
-  }
-}
-
-class _WavyPainter extends CustomPainter {
-  _WavyPainter({
+class _LinearPainter extends CustomPainter {
+  _LinearPainter({
     required this.value,
-    required this.height,
-    required this.wavelength,
-    required this.amplitude,
+    required this.spec,
+    required this.active,
     required this.track,
-    required this.fill,
     required this.phase,
-    required this.indeterminate,
+    required this.inset,
   });
 
-  final double value;
-  final double height;
-  final double wavelength;
-  final double amplitude;
+  final double? value;
+  final LinearSpec spec;
+  final Color active;
   final Color track;
-  final Color fill;
   final double phase;
-  final bool indeterminate;
+  final double inset;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paintTrack = Paint()..color = track;
-    final paintFill = Paint()..color = fill;
+    final left = inset;
+    final right = size.width - spec.trailingMargin;
+    final width = math.max(0.0, right - left);
 
-    final r = RRect.fromRectAndRadius(
-        Offset.zero & Size(size.width, height), Radius.circular(height / 2));
-    canvas.drawRRect(r, paintTrack);
+    // lane centers: active on top, track on bottom
+    final trackCy = size.height - spec.trackHeight / 2;
+    final activeHeight = spec.isWavy
+        ? (spec.trackHeight + 2 * spec.waveAmplitude)
+        : spec.trackHeight;
+    final activeCy =
+        trackCy - (spec.trackHeight / 2 + spec.gap + activeHeight / 2);
 
-    final w = size.width;
-    final progressW = indeterminate ? w : (w * value.clamp(0.0, 1.0));
+    // --- Draw track lane (flat pill) ---
+    final base = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = spec.trackHeight
+      ..strokeCap = StrokeCap.round
+      ..isAntiAlias = true;
 
-    final centerY = height / 2;
-    final path = Path()..moveTo(0, height);
-    path.lineTo(0, centerY);
+    canvas.drawLine(
+        Offset(left, trackCy), Offset(right, trackCy), base..color = track);
 
-    final k = 2 * math.pi / wavelength;
-    final step = 2.0;
-    double x = 0;
-    while (x <= progressW) {
-      final y = centerY - amplitude * math.sin(k * x + phase);
-      path.lineTo(x, y);
-      x += step;
+    // --- Active lane ---
+    final double p = (value ?? 0).clamp(0.0, 1.0);
+    if (spec.isWavy) {
+      // wavy centerline
+      final start = left;
+      final end = value == null ? right : (left + width * p);
+      final path = Path();
+      const step = 1.5;
+      final k = 2 * math.pi / spec.wavePeriod;
+
+      double x = start;
+      double y =
+          activeCy + spec.waveAmplitude * math.sin(phase + (x - start) * k);
+      path.moveTo(x, y);
+      for (x = start + step; x <= end; x += step) {
+        y = activeCy + spec.waveAmplitude * math.sin(phase + (x - start) * k);
+        path.lineTo(x, y);
+      }
+      // precise end point
+      y = activeCy + spec.waveAmplitude * math.sin(phase + (end - start) * k);
+      path.lineTo(end, y);
+
+      canvas.drawPath(
+          path,
+          base
+            ..color = active
+            ..strokeWidth = spec.trackHeight);
+
+      // end dot (non-overlapping, placed slightly before end)
+      final dotCenterX = math.max(start, end - spec.dotOffset);
+      canvas.drawCircle(
+          Offset(dotCenterX, y), spec.dotDiameter / 2, Paint()..color = active);
+    } else {
+      // flat active pill + end dot
+      final start = left;
+      final end = value == null ? right : (left + width * p);
+      canvas.drawLine(
+          Offset(start, activeCy),
+          Offset(end, activeCy),
+          base
+            ..color = active
+            ..strokeWidth = spec.trackHeight);
+      final dotCenterX = math.max(start, end - spec.dotOffset);
+      canvas.drawCircle(Offset(dotCenterX, activeCy), spec.dotDiameter / 2,
+          Paint()..color = active);
     }
-    path.lineTo(progressW, height);
-    path.close();
-
-    canvas.save();
-    final clip = Path()..addRRect(r);
-    canvas.clipPath(clip);
-    canvas.drawPath(path, paintFill);
-    canvas.restore();
   }
 
   @override
-  bool shouldRepaint(covariant _WavyPainter old) {
-    return old.value != value ||
-        old.height != height ||
-        old.wavelength != wavelength ||
-        old.amplitude != amplitude ||
-        old.phase != phase ||
-        old.track != track ||
-        old.fill != fill ||
-        old.indeterminate != indeterminate;
-  }
+  bool shouldRepaint(covariant _LinearPainter old) =>
+      value != old.value ||
+      spec != old.spec ||
+      active != old.active ||
+      track != old.track ||
+      phase != old.phase ||
+      inset != old.inset;
 }

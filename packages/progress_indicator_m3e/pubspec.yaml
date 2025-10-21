@@ -1,11 +1,11 @@
 name: progress_indicator_m3e
-description: Material 3 Expressive Progress Indicator for Flutter (linear + circular; flat + wavy) using M3E tokens.
-version: 0.1.0
+description: "Material 3 Expressive progress indicators."
+version: 0.3.0
 publish_to: none
 
 environment:
-  sdk: ">=3.5.0 <4.0.0"
-  flutter: ">=3.22.0"
+  sdk: ">=3.3.0 <4.0.0"
+  flutter: ">=3.19.0"
 
 dependencies:
   flutter:
