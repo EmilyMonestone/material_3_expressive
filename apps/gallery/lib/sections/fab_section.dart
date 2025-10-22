@@ -14,8 +14,6 @@ class FabSection extends StatelessWidget {
 
     return SectionCard(
       title: 'FabM3E',
-      subtitle:
-          'Generated from enums: kind × size. Includes Extended FAB examples.',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -8,15 +8,15 @@ import 'enums.dart';
 
 /// Linear indicator that renders two **separate lanes** (active above, track below)
 /// with a fixed vertical gap. Lanes never overlap.
-class LinearProgressIndicatorM3E extends StatelessWidget {
+class LinearProgressIndicatorM3E extends StatefulWidget {
   const LinearProgressIndicatorM3E({
     super.key,
-    this.value, // null => indeterminate; animate phase externally
+    this.value, // null => indeterminate
     this.size = LinearProgressM3ESize.m,
     this.shape = ProgressM3EShape.wavy,
     this.activeColor,
     this.trackColor,
-    this.phase = 0.0, // radians for wavy animation
+    this.phase = 0.0, // radians for wavy animation (external override)
     this.inset = 4.0, // horizontal left inset
   });
 
@@ -29,22 +29,73 @@ class LinearProgressIndicatorM3E extends StatelessWidget {
   final double inset;
 
   @override
+  State<LinearProgressIndicatorM3E> createState() =>
+      _LinearProgressIndicatorM3EState();
+}
+
+class _LinearProgressIndicatorM3EState extends State<LinearProgressIndicatorM3E>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  bool get _shouldAnimate {
+    final v = widget.value;
+    return widget.shape == ProgressM3EShape.wavy &&
+        (v == null || (v >= 1.0)) &&
+        widget.phase == 0.0;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..addListener(() {
+        if (mounted && _shouldAnimate) setState(() {});
+      });
+    if (_shouldAnimate) {
+      _controller.repeat();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant LinearProgressIndicatorM3E oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_shouldAnimate) {
+      if (!_controller.isAnimating) _controller.repeat();
+    } else {
+      if (_controller.isAnimating) _controller.stop();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final m3e =
         theme.extension<M3ETheme>() ?? M3ETheme.defaults(theme.colorScheme);
 
     // Farben aus m3e_design beziehen (überschreibbar per Props)
-    final active = activeColor ?? m3e.colors.primary;
-    final track = trackColor ?? m3e.colors.surfaceContainerHighest;
+    final active = widget.activeColor ?? m3e.colors.primary;
+    final track = widget.trackColor ?? m3e.colors.surfaceContainerHighest;
 
-    final spec = specForLinear(size: size, shape: shape);
+    final spec = specForLinear(size: widget.size, shape: widget.shape);
 
-    // Total height = active lane height (trackHeight or wavyHeight) + gap + trackHeight
+    // Total height equals the taller of the two strokes sharing the same baseline.
+    // For wavy, add vertical amplitude; for flat, it's just the trackHeight.
     final activeHeight = spec.isWavy
         ? (spec.trackHeight + 2 * spec.waveAmplitude)
         : spec.trackHeight;
-    final totalHeight = activeHeight + spec.gap + spec.trackHeight;
+    final totalHeight = activeHeight;
+
+    final double phaseValue = widget.phase != 0.0
+        ? widget.phase
+        : (_shouldAnimate ? _controller.value * 2 * math.pi : 0.0);
 
     return RepaintBoundary(
       child: SizedBox(
@@ -52,12 +103,12 @@ class LinearProgressIndicatorM3E extends StatelessWidget {
         width: double.infinity,
         child: CustomPaint(
           painter: _LinearPainter(
-            value: value,
+            value: widget.value,
             spec: spec,
-            active: activeColor ?? active,
-            track: trackColor ?? track,
-            phase: phase,
-            inset: inset,
+            active: widget.activeColor ?? active,
+            track: widget.trackColor ?? track,
+            phase: phaseValue,
+            inset: widget.inset,
           ),
         ),
       ),
@@ -88,13 +139,10 @@ class _LinearPainter extends CustomPainter {
     final right = size.width - spec.trailingMargin;
     final width = math.max(0.0, right - left);
 
-    // lane centers: active on top, track on bottom
-    final trackCy = size.height - spec.trackHeight / 2;
-    final activeHeight = spec.isWavy
-        ? (spec.trackHeight + 2 * spec.waveAmplitude)
-        : spec.trackHeight;
-    final activeCy =
-        trackCy - (spec.trackHeight / 2 + spec.gap + activeHeight / 2);
+    // both strokes share the same baseline (centerline)
+    final cy = size.height / 2;
+    final trackCy = cy;
+    final activeCy = cy;
 
     // --- Draw track lane (flat pill) ---
     final base = Paint()
@@ -103,11 +151,25 @@ class _LinearPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..isAntiAlias = true;
 
-    canvas.drawLine(
-        Offset(left, trackCy), Offset(right, trackCy), base..color = track);
+    // compute progress fraction early for both lanes
+    final double p = (value ?? 0).clamp(0.0, 1.0);
+
+    // Wave-only mode: in wavy shape, when indeterminate or full (100%),
+    // hide the track and end-dot; show only the wave which is animated via phase.
+    final bool waveOnly = spec.isWavy && (value == null || p >= 1.0);
+
+    // Track occupies the remaining segment to the right of the active,
+    // leaving a fixed inter-stroke gap. For indeterminate, fill full width.
+    final double activeEndX = value == null ? right : (left + width * p);
+    final double trackStartX =
+        value == null ? left : math.min(right, activeEndX + spec.gap);
+
+    if (!waveOnly) {
+      canvas.drawLine(Offset(trackStartX, trackCy), Offset(right, trackCy),
+          base..color = track);
+    }
 
     // --- Active lane ---
-    final double p = (value ?? 0).clamp(0.0, 1.0);
     if (spec.isWavy) {
       // wavy centerline
       final start = left;
@@ -134,10 +196,12 @@ class _LinearPainter extends CustomPainter {
             ..color = active
             ..strokeWidth = spec.trackHeight);
 
-      // end dot (non-overlapping, placed slightly before end)
-      final dotCenterX = math.max(start, end - spec.dotOffset);
-      canvas.drawCircle(
-          Offset(dotCenterX, y), spec.dotDiameter / 2, Paint()..color = active);
+      // end dot: accent at far right end of the track (shared baseline)
+      if (!waveOnly) {
+        final dotCenterX = math.max(left, right - spec.dotOffset);
+        canvas.drawCircle(Offset(dotCenterX, trackCy), spec.dotDiameter / 2,
+            Paint()..color = active);
+      }
     } else {
       // flat active pill + end dot
       final start = left;
@@ -148,8 +212,8 @@ class _LinearPainter extends CustomPainter {
           base
             ..color = active
             ..strokeWidth = spec.trackHeight);
-      final dotCenterX = math.max(start, end - spec.dotOffset);
-      canvas.drawCircle(Offset(dotCenterX, activeCy), spec.dotDiameter / 2,
+      final dotCenterX = math.max(left, right - spec.dotOffset);
+      canvas.drawCircle(Offset(dotCenterX, trackCy), spec.dotDiameter / 2,
           Paint()..color = active);
     }
   }

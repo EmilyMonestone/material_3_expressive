@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'enums.dart';
 
-class CircularProgressIndicatorM3E extends StatelessWidget {
+class CircularProgressIndicatorM3E extends StatefulWidget {
   const CircularProgressIndicatorM3E({
     super.key,
     this.value,
@@ -23,12 +23,65 @@ class CircularProgressIndicatorM3E extends StatelessWidget {
   final double rotation;
 
   @override
+  State<CircularProgressIndicatorM3E> createState() =>
+      _CircularProgressIndicatorM3EState();
+}
+
+class _CircularProgressIndicatorM3EState
+    extends State<CircularProgressIndicatorM3E>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  bool get _shouldAnimate {
+    final v = widget.value;
+    return widget.shape == ProgressM3EShape.wavy &&
+        (v == null || (v >= 1.0)) &&
+        widget.rotation == 0.0;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 3600),
+    )..addListener(() {
+        if (mounted && _shouldAnimate) setState(() {});
+      });
+    if (_shouldAnimate) {
+      _controller.repeat();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant CircularProgressIndicatorM3E oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_shouldAnimate) {
+      if (!_controller.isAnimating) _controller.repeat();
+    } else {
+      if (_controller.isAnimating) _controller.stop();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final active = activeColor ?? cs.primary;
-    final track = trackColor ?? cs.onSurfaceVariant.withOpacity(0.24);
-    final wantsWavy = shape == ProgressM3EShape.wavy;
-    final diameter = wantsWavy ? size.diameterWavy : size.diameterFlat;
+    final active = widget.activeColor ?? cs.primary;
+    final track = widget.trackColor ?? cs.onSurfaceVariant.withOpacity(0.24);
+    final wantsWavy = widget.shape == ProgressM3EShape.wavy;
+    final diameter =
+        wantsWavy ? widget.size.diameterWavy : widget.size.diameterFlat;
+
+    final double rot = widget.rotation != 0.0
+        ? widget.rotation
+        : (_shouldAnimate ? _controller.value * 2 * math.pi : 0.0);
+
     return RepaintBoundary(
       child: SizedBox(
         width: diameter,
@@ -36,16 +89,16 @@ class CircularProgressIndicatorM3E extends StatelessWidget {
         child: CustomPaint(
           painter: wantsWavy
               ? _CircularWavyPainter(
-                  value: value,
+                  value: widget.value,
                   active: active,
                   track: track,
-                  rotation: rotation)
+                  rotation: rot)
               : _CircularFlatPainter(
-                  value: value,
+                  value: widget.value,
                   active: active,
                   track: track,
-                  rotation: rotation,
-                  size: size),
+                  rotation: rot,
+                  size: widget.size),
         ),
       ),
     );
@@ -137,35 +190,36 @@ class _CircularWavyPainter extends CustomPainter {
     final center = s.center(Offset.zero);
     final baseRadius = (math.min(s.width, s.height) - stroke) / 2;
 
-    // Squiggle clearance: 2dp (edge-to-edge). Approximate by insetting the squiggle centerline by 6dp.
-    final clearance = 2.0;
-    final squiggleRadius =
-        baseRadius - (stroke / 2 + clearance + stroke / 2); // baseRadius - 6
     final amp = 2.0; // radial amplitude of squiggle
     final scallopLen = 18.0; // along-arc wavelength proxy (dp)
+    // Taper length to fade the wave amplitude to zero near the end so the line ends "closed".
+    final taperLen = scallopLen / 2;
 
     // Active sweep
     final activeSweep =
-        value == null ? math.pi * 1.5 : (value!.clamp(0.0, 1.0) * math.pi * 2);
+        value == null ? math.pi * 2 : (value!.clamp(0.0, 1.0) * math.pi * 2);
     final start = -math.pi / 2 + rotation;
     final end = start + activeSweep;
 
-    // Track ring with gap around active
-    final trackPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = stroke
-      ..strokeCap = StrokeCap.round
-      ..isAntiAlias = true
-      ..color = track;
+    // Track ring with gap around active (skip when wave-only: indeterminate or 100%)
+    final bool waveOnly = value == null || (value != null && value! >= 1.0);
+    if (!waveOnly) {
+      final trackPaint = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = stroke
+        ..strokeCap = StrokeCap.round
+        ..isAntiAlias = true
+        ..color = track;
 
-    final gapAngle = 2.0 / baseRadius;
-    final rect = Rect.fromCircle(center: center, radius: baseRadius);
-    final total = math.pi * 2;
-    final a1 = end + gapAngle;
-    final a2 = start - gapAngle;
-    double sweep1 = (a2 - a1);
-    while (sweep1 <= 0) sweep1 += total;
-    canvas.drawArc(rect, a1, sweep1, false, trackPaint);
+      final gapAngle = 2.0 / baseRadius;
+      final rect = Rect.fromCircle(center: center, radius: baseRadius);
+      final total = math.pi * 2;
+      final a1 = end + gapAngle;
+      final a2 = start - gapAngle;
+      double sweep1 = (a2 - a1);
+      while (sweep1 <= 0) sweep1 += total;
+      canvas.drawArc(rect, a1, sweep1, false, trackPaint);
+    }
 
     // Active squiggle path
     final steps = math.max(48, (s.width * 1.2).round());
@@ -173,9 +227,17 @@ class _CircularWavyPainter extends CustomPainter {
     for (int i = 0; i <= steps; i++) {
       final t = i / steps;
       final ang = start + (end - start) * t;
-      final arcLen = squiggleRadius * (ang - start);
-      final r =
-          squiggleRadius + amp * math.sin(arcLen / scallopLen * 2 * math.pi);
+      final arcLen = baseRadius * (ang - start);
+      // Fade amplitude to 0 near the end so the path ends on the base radius (closed look).
+      final arcToEnd = baseRadius * (end - ang);
+      double taperFactor = 1.0;
+      if (arcToEnd < taperLen) {
+        final tEnd = (arcToEnd / taperLen).clamp(0.0, 1.0);
+        // Ease-out to 0 at the very end.
+        taperFactor = math.sin(tEnd * math.pi / 2);
+      }
+      final r = baseRadius +
+          (amp * taperFactor) * math.sin(arcLen / scallopLen * 2 * math.pi);
       final p =
           Offset(center.dx + r * math.cos(ang), center.dy + r * math.sin(ang));
       if (i == 0)

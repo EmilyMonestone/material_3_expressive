@@ -16,14 +16,14 @@ class SplitButtonSection extends StatelessWidget {
 
     return SectionCard(
       title: 'SplitButtonM3E',
-      subtitle: 'Generated from enums: emphasis × size (round shape).',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (final emphasis in SplitButtonM3EEmphasis.values) ...[
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Text(emphasis.name, style: Theme.of(context).textTheme.titleMedium),
+              child: Text(emphasis.name,
+                  style: Theme.of(context).textTheme.titleMedium),
             ),
             Wrap(
               spacing: 12,

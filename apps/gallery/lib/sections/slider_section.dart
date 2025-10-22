@@ -18,51 +18,49 @@ class _SliderSectionState extends State<SliderSection> {
   Widget build(BuildContext context) {
     return SectionCard(
       title: 'SliderM3E',
-      subtitle: 'Generated from enums: size × emphasis (round shape).',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (final size in SliderM3ESize.values) ...[
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Text('size: ${size.name}', style: Theme.of(context).textTheme.titleMedium),
+              child: Text('size: ${size.name}',
+                  style: Theme.of(context).textTheme.titleMedium),
             ),
             Wrap(
               runSpacing: 12,
               children: [
-                for (final emp in SliderM3EEmphasis.values)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('emphasis: ${emp.name}', style: Theme.of(context).textTheme.labelLarge),
-                        SliderM3E(
-                          value: _value,
-                          onChanged: (v) => setState(() => _value = v),
-                          min: 0,
-                          max: 100,
-                          label: _value.toStringAsFixed(0),
-                          size: size,
-                          emphasis: emp,
-                          startIcon: const Icon(Icons.volume_mute),
-                          endIcon: const Icon(Icons.volume_up),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SliderM3E(
+                        value: _value,
+                        onChanged: (v) => setState(() => _value = v),
+                        min: 0,
+                        max: 100,
+                        label: _value.toStringAsFixed(0),
+                        size: size,
+                        emphasis: SliderM3EEmphasis.primary,
+                        startIcon: const Icon(Icons.volume_mute),
+                        endIcon: const Icon(Icons.volume_up),
+                      ),
+                      RangeSliderM3E(
+                        values: _range,
+                        onChanged: (v) => setState(() => _range = v),
+                        min: 0,
+                        max: 100,
+                        size: size,
+                        emphasis: SliderM3EEmphasis.primary,
+                        labels: RangeLabels(
+                          _range.start.toStringAsFixed(0),
+                          _range.end.toStringAsFixed(0),
                         ),
-                        RangeSliderM3E(
-                          values: _range,
-                          onChanged: (v) => setState(() => _range = v),
-                          min: 0,
-                          max: 100,
-                          size: size,
-                          emphasis: emp,
-                          labels: RangeLabels(
-                            _range.start.toStringAsFixed(0),
-                            _range.end.toStringAsFixed(0),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                ),
               ],
             ),
           ],

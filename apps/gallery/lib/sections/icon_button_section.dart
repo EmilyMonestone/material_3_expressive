@@ -10,14 +10,14 @@ class IconButtonSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return SectionCard(
       title: 'IconButtonM3E',
-      subtitle: 'Generated from enums: variant × size (round shape, default width).',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (final variant in IconButtonM3EVariant.values) ...[
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Text(variant.name, style: Theme.of(context).textTheme.titleMedium),
+              child: Text(variant.name,
+                  style: Theme.of(context).textTheme.titleMedium),
             ),
             Wrap(
               spacing: 12,

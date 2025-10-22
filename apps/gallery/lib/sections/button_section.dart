@@ -10,8 +10,6 @@ class ButtonSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return SectionCard(
       title: 'ButtonM3E',
-      subtitle:
-          'Generated from enums: variant × size; grouped by shape family.',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

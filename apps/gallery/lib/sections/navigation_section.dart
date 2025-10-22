@@ -17,11 +17,11 @@ class _NavigationSectionState extends State<NavigationSection> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final m3e = theme.extension<M3ETheme>() ?? M3ETheme.defaults(theme.colorScheme);
+    final m3e =
+        theme.extension<M3ETheme>() ?? M3ETheme.defaults(theme.colorScheme);
 
     return SectionCard(
       title: 'Navigation',
-      subtitle: 'Generated from enums: NavBar indicator styles and Rail indicator styles.',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -38,17 +38,33 @@ class _NavigationSectionState extends State<NavigationSection> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(bottom: 4),
-                      child: Text('indicator: ${style.name}', style: theme.textTheme.labelLarge),
+                      child: Text('indicator: ${style.name}',
+                          style: theme.textTheme.labelLarge),
                     ),
                     NavigationBarM3E(
                       selectedIndex: _barIndex,
-                      onDestinationSelected: (i) => setState(() => _barIndex = i),
+                      onDestinationSelected: (i) =>
+                          setState(() => _barIndex = i),
                       indicatorStyle: style,
                       destinations: const [
-                        NavigationDestinationM3E(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Home'),
-                        NavigationDestinationM3E(icon: Icon(Icons.search_outlined), selectedIcon: Icon(Icons.search), label: 'Search', badgeDot: true),
-                        NavigationDestinationM3E(icon: Icon(Icons.favorite_outline), selectedIcon: Icon(Icons.favorite), label: 'Favorites', badgeCount: 2),
-                        NavigationDestinationM3E(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profile'),
+                        NavigationDestinationM3E(
+                            icon: Icon(Icons.home_outlined),
+                            selectedIcon: Icon(Icons.home),
+                            label: 'Home'),
+                        NavigationDestinationM3E(
+                            icon: Icon(Icons.search_outlined),
+                            selectedIcon: Icon(Icons.search),
+                            label: 'Search',
+                            badgeDot: true),
+                        NavigationDestinationM3E(
+                            icon: Icon(Icons.favorite_outline),
+                            selectedIcon: Icon(Icons.favorite),
+                            label: 'Favorites',
+                            badgeCount: 2),
+                        NavigationDestinationM3E(
+                            icon: Icon(Icons.person_outline),
+                            selectedIcon: Icon(Icons.person),
+                            label: 'Profile'),
                       ],
                     ),
                     const SizedBox(height: 8),
@@ -72,12 +88,22 @@ class _NavigationSectionState extends State<NavigationSection> {
                 for (final style in RailIndicatorStyle.values) ...[
                   NavigationRailM3E(
                     selectedIndex: _railIndex,
-                    onDestinationSelected: (i) => setState(() => _railIndex = i),
+                    onDestinationSelected: (i) =>
+                        setState(() => _railIndex = i),
                     indicatorStyle: style,
                     destinations: const [
-                      RailDestinationM3E(icon: Icon(Icons.dashboard_outlined), selectedIcon: Icon(Icons.dashboard), label: 'Dash'),
-                      RailDestinationM3E(icon: Icon(Icons.analytics_outlined), selectedIcon: Icon(Icons.analytics), label: 'Reports'),
-                      RailDestinationM3E(icon: Icon(Icons.settings_outlined), selectedIcon: Icon(Icons.settings), label: 'Settings'),
+                      RailDestinationM3E(
+                          icon: Icon(Icons.dashboard_outlined),
+                          selectedIcon: Icon(Icons.dashboard),
+                          label: 'Dash'),
+                      RailDestinationM3E(
+                          icon: Icon(Icons.analytics_outlined),
+                          selectedIcon: Icon(Icons.analytics),
+                          label: 'Reports'),
+                      RailDestinationM3E(
+                          icon: Icon(Icons.settings_outlined),
+                          selectedIcon: Icon(Icons.settings),
+                          label: 'Settings'),
                     ],
                   ),
                   const VerticalDivider(width: 1),

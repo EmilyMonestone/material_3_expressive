@@ -10,7 +10,6 @@ class LoadingIndicatorSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return SectionCard(
       title: 'LoadingIndicatorM3E',
-      subtitle: 'Generated from enums: variant values.',
       child: Wrap(
         spacing: 16,
         runSpacing: 16,

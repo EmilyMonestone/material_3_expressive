@@ -11,20 +11,25 @@ class ToolbarSection extends StatelessWidget {
     final actions = [
       ToolbarActionM3E(icon: Icons.search, onPressed: () {}),
       ToolbarActionM3E(icon: Icons.share, onPressed: () {}),
-      ToolbarActionM3E(icon: Icons.delete, onPressed: () {}, isDestructive: true, label: 'Delete'),
-      ToolbarActionM3E(icon: Icons.settings, onPressed: () {}, label: 'Settings'),
+      ToolbarActionM3E(
+          icon: Icons.delete,
+          onPressed: () {},
+          isDestructive: true,
+          label: 'Delete'),
+      ToolbarActionM3E(
+          icon: Icons.settings, onPressed: () {}, label: 'Settings'),
     ];
 
     return SectionCard(
       title: 'ToolbarM3E',
-      subtitle: 'Generated from enums: variant × size (round shape).',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (final variant in ToolbarM3EVariant.values) ...[
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Text(variant.name, style: Theme.of(context).textTheme.titleMedium),
+              child: Text(variant.name,
+                  style: Theme.of(context).textTheme.titleMedium),
             ),
             Wrap(
               runSpacing: 12,
