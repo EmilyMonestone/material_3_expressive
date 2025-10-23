@@ -1,6 +1,6 @@
 name: icon_button_m3e
 description: "Material 3 Expressive IconButton with sizes, variants, shapes, toggle, and accessible hit targets."
-version: 0.1.0
+version: 0.1.1
 repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/icon_button_m3e
 issue_tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
 
