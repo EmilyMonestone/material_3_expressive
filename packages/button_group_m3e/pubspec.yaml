@@ -1,8 +1,8 @@
 name: button_group_m3e
 description: Wrapper-only Button Group for Material 3 Expressive (layout, shape, size propagation).
 version: 0.1.0
-publish_to: none
-repository: https://example.com/your-repo
+repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/button_group_m3e
+issue_tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
 
 environment:
   sdk: ">=3.5.0 <4.0.0"

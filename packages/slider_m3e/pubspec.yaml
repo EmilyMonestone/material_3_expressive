@@ -1,7 +1,8 @@
 name: slider_m3e
 description: Material 3 Expressive Sliders (single & range) for Flutter, powered by M3E tokens.
 version: 0.1.0
-publish_to: none
+repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/slider_m3e
+issue_tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
