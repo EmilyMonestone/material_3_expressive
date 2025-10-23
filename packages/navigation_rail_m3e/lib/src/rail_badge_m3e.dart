@@ -1,76 +1,56 @@
+import 'dart:ui' show FontFeature;
 import 'package:flutter/material.dart';
-import 'package:m3e_design/m3e_design.dart';
 
+import 'rail_tokens_adapter.dart';
+
+/// Large numeric badge for rail items (0..999+). One class per file.
 class RailBadgeM3E extends StatelessWidget {
+  /// Creates a large numeric badge.
   const RailBadgeM3E({
     super.key,
-    required this.child,
-    this.count,
-    this.showDot = false,
-    this.maxCount = 99,
-    this.backgroundColor,
-    this.foregroundColor,
-    this.semanticLabel,
-    this.offset = const Offset(8, -6),
-  }) : assert(count == null || count >= 0);
+    required this.count,
+    this.maxDigits = 3,
+    this.dense = false,
+  });
 
-  final Widget child;
-  final int? count;
-  final bool showDot;
-  final int maxCount;
-  final Color? backgroundColor;
-  final Color? foregroundColor;
-  final String? semanticLabel;
-  final Offset offset;
+  /// The numeric value to display in the badge.
+  final int count;
+
+  /// Maximum digits before showing a trailing '+' (e.g. 999+).
+  final int maxDigits;
+
+  /// Whether to use a denser (smaller padding) variant.
+  final bool dense;
 
   @override
   Widget build(BuildContext context) {
-    final t = Theme.of(context);
-    final m3e = t.extension<M3ETheme>() ?? M3ETheme.defaults(t.colorScheme);
-    final bg = backgroundColor ?? m3e.colors.errorContainer;
-    final fg = foregroundColor ?? m3e.colors.onErrorContainer;
-
-    final badge = showDot
-        ? _dot(bg)
-        : _label(bg, fg, count == null ? '' : _format(count!, maxCount));
-
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        child,
-        Positioned(
-          right: offset.dx,
-          top: offset.dy,
-          child: Semantics(
-            label: semanticLabel ?? (count != null ? 'Notifications: ${count!}' : 'Notifications'),
-            child: badge,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _dot(Color bg) {
+    final tokens = NavigationRailTokensAdapter(context);
+    final String text = count > (10 * (pow10(maxDigits) - 1))
+        ? '${pow10(maxDigits) - 1}+'
+        : '$count';
+    final double pad = dense ? 2 : 4;
     return Container(
-      width: 8, height: 8,
-      decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
-    );
-  }
-
-  Widget _label(Color bg, Color fg, String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      padding: EdgeInsets.symmetric(horizontal: pad + 2, vertical: pad),
       decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(10),
+        color: tokens.badgeLargeBackground,
+        borderRadius: BorderRadius.circular(999),
       ),
-      constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
       child: DefaultTextStyle(
-        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
-        child: Text(text, textAlign: TextAlign.center, style: TextStyle(color: fg)),
+        style: Theme.of(context).textTheme.labelSmall!.copyWith(
+          color: tokens.badgeLargeLabel,
+          fontFeatures: const [FontFeature.tabularFigures()],
+        ),
+        child: Text(text, maxLines: 1),
       ),
     );
   }
 
-  String _format(int c, int max) => (c > max) ? '$max+' : '$c';
+  /// Returns 10 to the power of [n].
+  static int pow10(int n) {
+    var v = 1;
+    for (var i = 0; i < n; i++) {
+      v *= 10;
+    }
+    return v;
+  }
 }

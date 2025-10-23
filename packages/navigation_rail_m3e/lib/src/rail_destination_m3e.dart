@@ -1,38 +1,24 @@
 import 'package:flutter/material.dart';
-import 'rail_badge_m3e.dart';
 
-class RailDestinationM3E {
-  const RailDestinationM3E({
+/// Model for a navigation destination. One class per file.
+class NavigationRailM3EDestination {
+  const NavigationRailM3EDestination({
     required this.icon,
-    required this.label,
     this.selectedIcon,
-    this.badgeCount,
-    this.badgeDot = false,
+    required this.label,
+    this.largeBadgeCount,
+    this.smallBadge = false,
     this.semanticLabel,
+    this.short = false,
   });
 
   final Widget icon;
   final Widget? selectedIcon;
   final String label;
-
-  /// Optional badge counter
-  final int? badgeCount;
-
-  /// If true, show a small dot instead of a counter.
-  final bool badgeDot;
-
+  final int? largeBadgeCount;
+  final bool smallBadge;
   final String? semanticLabel;
 
-  Widget buildIcon([bool selected = false]) {
-    final base = selected && selectedIcon != null ? selectedIcon! : icon;
-    if (badgeCount != null || badgeDot) {
-      return RailBadgeM3E(
-        child: base,
-        count: badgeCount,
-        showDot: badgeDot,
-        semanticLabel: semanticLabel,
-      );
-    }
-    return base;
-  }
+  /// If true, uses short item height (56dp) instead of 64dp.
+  final bool short;
 }

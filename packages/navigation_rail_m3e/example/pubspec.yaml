@@ -1,0 +1,15 @@
+name: navigation_rail_m3e_example
+description: Example for navigation_rail_m3e
+publish_to: "none"
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  navigation_rail_m3e:
+    path: ../
+
+flutter:
+  uses-material-design: true

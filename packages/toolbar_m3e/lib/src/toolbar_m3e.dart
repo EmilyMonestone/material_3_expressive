@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:m3e_design/m3e_design.dart';
+
 import 'enums.dart';
-import 'toolbar_tokens_adapter.dart';
 import 'toolbar_action_m3e.dart';
+import 'toolbar_tokens_adapter.dart';
 
 class ToolbarM3E extends StatelessWidget implements PreferredSizeWidget {
   const ToolbarM3E({
@@ -59,9 +60,12 @@ class ToolbarM3E extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize {
     // A rough default; actual height is resolved at build based on size/density.
     switch (size) {
-      case ToolbarM3ESize.small: return const Size.fromHeight(40);
-      case ToolbarM3ESize.medium: return const Size.fromHeight(48);
-      case ToolbarM3ESize.large: return const Size.fromHeight(56);
+      case ToolbarM3ESize.small:
+        return const Size.fromHeight(40);
+      case ToolbarM3ESize.medium:
+        return const Size.fromHeight(48);
+      case ToolbarM3ESize.large:
+        return const Size.fromHeight(56);
     }
   }
 
@@ -69,7 +73,8 @@ class ToolbarM3E extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final tokens = ToolbarTokensAdapter(context);
     final metrics = tokens.metrics(density);
-    final m3e = Theme.of(context).extension<M3ETheme>() ?? M3ETheme.defaults(Theme.of(context).colorScheme);
+    final m3e = Theme.of(context).extension<M3ETheme>() ??
+        M3ETheme.defaults(Theme.of(context).colorScheme);
 
     final height = switch (size) {
       ToolbarM3ESize.small => metrics.heightSmall,
@@ -84,12 +89,18 @@ class ToolbarM3E extends StatelessWidget implements PreferredSizeWidget {
 
     final resolvedTitle = title ??
         (titleText != null
-            ? Text(titleText!, style: tokens.titleStyle().copyWith(color: fg), overflow: TextOverflow.ellipsis)
+            ? Text(titleText!,
+                style: tokens.titleStyle().copyWith(color: fg),
+                overflow: TextOverflow.ellipsis)
             : null);
 
     final resolvedSubtitle = subtitle ??
         (subtitleText != null
-            ? Text(subtitleText!, style: tokens.subtitleStyle().copyWith(color: fg.withValues(alpha: 0.8)), overflow: TextOverflow.ellipsis)
+            ? Text(subtitleText!,
+                style: tokens
+                    .subtitleStyle()
+                    .copyWith(color: fg.withValues(alpha: 0.8)),
+                overflow: TextOverflow.ellipsis)
             : null);
 
     final toolbarRow = Row(
@@ -118,7 +129,10 @@ class ToolbarM3E extends StatelessWidget implements PreferredSizeWidget {
 
     final bar = Material(
       color: bg,
-      elevation: elevation ?? (variant == ToolbarM3EVariant.surface ? metrics.elevationSurface : metrics.elevationProminent),
+      elevation: elevation ??
+          (variant == ToolbarM3EVariant.surface
+              ? metrics.elevationSurface
+              : metrics.elevationProminent),
       shape: shape,
       clipBehavior: clipBehavior,
       child: SizedBox(
@@ -127,13 +141,17 @@ class ToolbarM3E extends StatelessWidget implements PreferredSizeWidget {
           padding: pad,
           child: IconTheme.merge(
             data: IconThemeData(color: fg, size: metrics.iconSize),
-            child: DefaultTextStyle.merge(style: TextStyle(color: fg), child: toolbarRow),
+            child: DefaultTextStyle.merge(
+                style: TextStyle(color: fg), child: toolbarRow),
           ),
         ),
       ),
     );
 
-    final content = safeArea ? SafeArea(top: false, left: false, right: false, bottom: false, child: bar) : bar;
+    final content = safeArea
+        ? SafeArea(
+            top: false, left: false, right: false, bottom: false, child: bar)
+        : bar;
 
     if (semanticLabel == null) return content;
     return Semantics(container: true, label: semanticLabel!, child: content);
@@ -141,7 +159,8 @@ class ToolbarM3E extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class _TitleBlock extends StatelessWidget {
-  const _TitleBlock({required this.title, required this.subtitle, required this.center});
+  const _TitleBlock(
+      {required this.title, required this.subtitle, required this.center});
   final Widget? title;
   final Widget? subtitle;
   final bool center;
@@ -152,10 +171,15 @@ class _TitleBlock extends StatelessWidget {
 
     final col = Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: center ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      crossAxisAlignment:
+          center ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
-        if (title != null) DefaultTextStyle.merge(style: Theme.of(context).textTheme.titleSmall!, child: title!),
-        if (subtitle != null) DefaultTextStyle.merge(style: Theme.of(context).textTheme.bodySmall!, child: subtitle!),
+        if (title != null)
+          DefaultTextStyle.merge(
+              style: Theme.of(context).textTheme.titleSmall!, child: title!),
+        if (subtitle != null)
+          DefaultTextStyle.merge(
+              style: Theme.of(context).textTheme.bodySmall!, child: subtitle!),
       ],
     );
 
@@ -187,17 +211,23 @@ class _ActionsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     if (actions.isEmpty) return const SizedBox.shrink();
     final inline = actions.take(maxInline).toList(growable: false);
-    final overflow = actions.length > maxInline ? actions.sublist(maxInline) : const <ToolbarActionM3E>[];
+    final overflow = actions.length > maxInline
+        ? actions.sublist(maxInline)
+        : const <ToolbarActionM3E>[];
 
     final row = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        for (final a in inline) ToolbarIconButtonM3E(action: a, color: iconColor, iconSize: iconSize),
+        for (final a in inline)
+          ToolbarIconButtonM3E(action: a, color: iconColor, iconSize: iconSize),
         if (overflow.isNotEmpty)
           _OverflowMenu(
             actions: overflow,
             icon: overflowIcon,
-            textStyle: Theme.of(context).textTheme.labelLarge?.copyWith(color: m3e.colors.onSurface),
+            textStyle: Theme.of(context)
+                .textTheme
+                .labelLarge
+                ?.copyWith(color: m3e.colors.onSurface),
             destructiveColor: m3e.colors.error,
           ),
       ],
@@ -230,10 +260,14 @@ class _OverflowMenu extends StatelessWidget {
             enabled: actions[i].enabled,
             child: DefaultTextStyle.merge(
               style: (actions[i].isDestructive
-                      ? (textStyle?.copyWith(color: destructiveColor) ?? TextStyle(color: destructiveColor))
+                      ? (textStyle?.copyWith(color: destructiveColor) ??
+                          TextStyle(color: destructiveColor))
                       : textStyle) ??
                   const TextStyle(),
-              child: Text(actions[i].label ?? actions[i].tooltip ?? actions[i].semanticLabel ?? 'Action ${i + 1}'),
+              child: Text(actions[i].label ??
+                  actions[i].tooltip ??
+                  actions[i].semanticLabel ??
+                  'Action ${i + 1}'),
             ),
           ),
       ],

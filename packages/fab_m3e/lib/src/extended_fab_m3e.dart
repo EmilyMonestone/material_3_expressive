@@ -39,7 +39,7 @@ class ExtendedFabM3E extends StatelessWidget {
     final m = tokens.metrics(density);
     final bg = tokens.bg(kind);
     final fg = tokens.fg(kind);
-    final shape = tokens.shape(shapeFamily, size, extended: true);
+    final shape = tokens.shape(shapeFamily, size);
 
     final minH = m.extendedHeight;
     final child = DefaultTextStyle.merge(

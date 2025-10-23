@@ -1,18 +1,28 @@
 name: navigation_rail_m3e
-description: Material 3 Expressive Navigation Rail for Flutter with token-driven colors, shapes, indicators, and badges.
+description: Material 3 Expressive navigation rail (collapsed & expanded) with modal/standard modes, badges, sections, and m3e_design token integration.
 version: 0.1.0
-publish_to: none
+homepage: https://github.com/EmilyMonestone/material_3_expressive
 
 environment:
-  sdk: ">=3.5.0 <4.0.0"
-  flutter: ">=3.22.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  # Integrates with your design system tokens.
   m3e_design:
     path: ../m3e_design
+  # FAB components used by the rail (FabM3E and ExtendedFabM3E).
+  fab_m3e:
+    path: ../fab_m3e
+  # Icon button used by the rail's menu control.
+  icon_button_m3e:
+    path: ../icon_button_m3e
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true

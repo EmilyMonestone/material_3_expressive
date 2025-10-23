@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:m3e_design/m3e_design.dart';
-import 'button_group_m3e_enums.dart';
+
 import '_tokens_adapter.dart';
+import 'button_group_m3e_enums.dart';
 import 'button_group_m3e_scope.dart';
 
 class ButtonGroupM3E extends StatelessWidget {
@@ -57,7 +57,8 @@ class ButtonGroupM3E extends StatelessWidget {
     final tokens = metricsFor(context, size, density);
     final cs = Theme.of(context).colorScheme;
     final dividerClr = dividerColor ?? cs.outlineVariant.withValues(alpha: 0.6);
-    final dividerThk = (dividerThickness ?? tokens.dividerThickness).clamp(0.5, 2.0);
+    final dividerThk =
+        (dividerThickness ?? tokens.dividerThickness).clamp(0.5, 2.0);
 
     final effSpacing = _connected ? 0.0 : (spacing ?? tokens.spacing);
     final effRunSpacing = wrap ? (runSpacing ?? tokens.runSpacing) : 0.0;
@@ -69,7 +70,8 @@ class ButtonGroupM3E extends StatelessWidget {
       density: density,
       direction: direction,
       isConnected: _connected,
-      child: _buildContent(context, effSpacing, effRunSpacing, dividerClr, dividerThk),
+      child: _buildContent(
+          context, effSpacing, effRunSpacing, dividerClr, dividerThk),
     );
 
     final semantics = Semantics(
@@ -123,8 +125,14 @@ class ButtonGroupM3E extends StatelessWidget {
     }
 
     return direction == Axis.horizontal
-        ? Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: list)
-        : Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: list);
+        ? Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: list)
+        : Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: list);
   }
 
   Widget _wrapLayout(BuildContext context, double spacing, double runSpacing) {
@@ -153,7 +161,11 @@ class ButtonGroupM3E extends StatelessWidget {
   }
 
   Widget _wrapItemScope(BuildContext context,
-      {required int index, required int count, required bool isFirst, required bool isLast, required Widget child}) {
+      {required int index,
+      required int count,
+      required bool isFirst,
+      required bool isLast,
+      required Widget child}) {
     return ButtonGroupM3EItemScope(
       index: index,
       count: count,
@@ -163,8 +175,9 @@ class ButtonGroupM3E extends StatelessWidget {
     );
   }
 
-  Widget _spacer(double spacing) =>
-      direction == Axis.horizontal ? SizedBox(width: spacing) : SizedBox(height: spacing);
+  Widget _spacer(double spacing) => direction == Axis.horizontal
+      ? SizedBox(width: spacing)
+      : SizedBox(height: spacing);
 
   Widget _buildDivider(Color color, double thickness) {
     return direction == Axis.horizontal
@@ -181,6 +194,7 @@ class ButtonGroupM3E extends StatelessWidget {
       ButtonGroupM3ESize.lg => 96.0,
       ButtonGroupM3ESize.xl => 120.0,
     };
-    return ConstrainedBox(constraints: BoxConstraints(minWidth: minW), child: child);
+    return ConstrainedBox(
+        constraints: BoxConstraints(minWidth: minW), child: child);
   }
 }

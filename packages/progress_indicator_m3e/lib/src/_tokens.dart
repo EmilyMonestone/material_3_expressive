@@ -9,7 +9,7 @@ class Palette {
 
   // Use theme roles; callers can override colors if needed.
   Color get active => cs.primary;
-  Color get track => cs.onSurfaceVariant.withOpacity(0.24);
+  Color get track => cs.onSurfaceVariant.withValues(alpha: 0.24);
   Color get bg => cs.surface;
 }
 
@@ -39,7 +39,8 @@ class LinearSpec {
 LinearSpec specForLinear({
   required LinearProgressM3ESize size,
   required ProgressM3EShape shape,
-}) => switch ((shape, size)) {
+}) =>
+    switch ((shape, size)) {
       (ProgressM3EShape.flat, LinearProgressM3ESize.s) => const LinearSpec(
           trackHeight: 4,
           gap: 4,

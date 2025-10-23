@@ -1,0 +1,17 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  language:
+    strict-raw-types: true
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+linter:
+  rules:
+    - public_member_api_docs
+    - always_declare_return_types
+    - prefer_final_locals
+    - prefer_const_constructors
+    - prefer_const_literals_to_create_immutables
+    - avoid_print
+    - directives_ordering

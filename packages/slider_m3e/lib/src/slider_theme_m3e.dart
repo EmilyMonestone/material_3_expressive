@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'slider_tokens_adapter.dart';
+
 import 'enums.dart';
+import 'slider_tokens_adapter.dart';
 
 SliderThemeData sliderThemeM3E(
   BuildContext context, {
@@ -42,7 +43,9 @@ SliderThemeData sliderThemeM3E(
     overlayColor: t.overlayColor(emphasis),
     valueIndicatorColor: t.valueIndicatorColor(),
     valueIndicatorTextStyle: t.valueIndicatorTextStyle(),
-    showValueIndicator: showValueIndicator ? ShowValueIndicator.onDrag : ShowValueIndicator.onlyForDiscrete,
+    showValueIndicator: showValueIndicator
+        ? ShowValueIndicator.onDrag
+        : ShowValueIndicator.onlyForDiscrete,
     thumbShape: thumbShape,
     overlayShape: RoundSliderOverlayShape(overlayRadius: m.overlayRadius),
     rangeThumbShape: shapeFamily == SliderM3EShapeFamily.round

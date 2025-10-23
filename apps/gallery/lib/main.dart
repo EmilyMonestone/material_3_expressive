@@ -42,9 +42,6 @@ class _GalleryHomeState extends State<GalleryHome> {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final m3e =
-        Theme.of(context).extension<M3ETheme>() ?? M3ETheme.defaults(cs);
     return Scaffold(
       appBar: AppBarM3E(
         titleText: 'M3E Gallery',

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:material_new_shapes/material_new_shapes.dart';
+
+import 'enums.dart';
 import 'expressive_loading_indicator.dart';
 import 'loading_tokens_adapter.dart';
-import 'enums.dart';
 
 /// Material 3 Expressive Loading Indicator
 /// - Default: floating morphing shape on surface
@@ -38,12 +39,15 @@ class LoadingIndicatorM3E extends StatelessWidget {
 
     final activeColor = switch (variant) {
       LoadingIndicatorM3EVariant.defaultStyle => color ?? tokens.activeColor(),
-      LoadingIndicatorM3EVariant.contained => color ?? tokens.containedActiveColor(),
+      LoadingIndicatorM3EVariant.contained =>
+        color ?? tokens.containedActiveColor(),
     };
 
     final containerBg = switch (variant) {
-      LoadingIndicatorM3EVariant.defaultStyle => containerColor ?? tokens.containerColorDefault(),
-      LoadingIndicatorM3EVariant.contained => containerColor ?? tokens.containedContainerColor(),
+      LoadingIndicatorM3EVariant.defaultStyle =>
+        containerColor ?? tokens.containerColorDefault(),
+      LoadingIndicatorM3EVariant.contained =>
+        containerColor ?? tokens.containedContainerColor(),
     };
 
     final indicator = ExpressiveLoadingIndicator(

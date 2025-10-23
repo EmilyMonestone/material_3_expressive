@@ -73,7 +73,8 @@ class _CircularProgressIndicatorM3EState
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final active = widget.activeColor ?? cs.primary;
-    final track = widget.trackColor ?? cs.onSurfaceVariant.withOpacity(0.24);
+    final track =
+        widget.trackColor ?? cs.onSurfaceVariant.withValues(alpha: 0.24);
     final wantsWavy = widget.shape == ProgressM3EShape.wavy;
     final diameter =
         wantsWavy ? widget.size.diameterWavy : widget.size.diameterFlat;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:m3e_design/m3e_design.dart';
+
 import 'enums.dart';
 
 @immutable
@@ -28,7 +29,8 @@ class _FabMetrics {
 
 _FabMetrics _metricsFor(BuildContext context, FabM3EDensity density) {
   final theme = Theme.of(context);
-  final m3e = theme.extension<M3ETheme>() ?? M3ETheme.defaults(theme.colorScheme);
+  final m3e =
+      theme.extension<M3ETheme>() ?? M3ETheme.defaults(theme.colorScheme);
   final sp = m3e.spacing;
 
   double small = 40;
@@ -38,7 +40,10 @@ _FabMetrics _metricsFor(BuildContext context, FabM3EDensity density) {
   double icon = 24;
 
   if (density == FabM3EDensity.compact) {
-    small -= 4; regular -= 4; large -= 4; extH -= 4;
+    small -= 4;
+    regular -= 4;
+    large -= 4;
+    extH -= 4;
   }
 
   return _FabMetrics(
@@ -93,11 +98,16 @@ class FabTokensAdapter {
   }
 
   // Shapes
-  ShapeBorder shape(FabM3EShapeFamily family, FabM3ESize size, {bool extended = false}) {
-    final set = family == FabM3EShapeFamily.round ? _m3e.shapes.round : _m3e.shapes.square;
-    if (extended) return StadiumBorder(side: BorderSide.none);
+  ShapeBorder shape(FabM3EShapeFamily family, FabM3ESize size) {
+    final set = family == FabM3EShapeFamily.round
+        ? _m3e.shapes.round
+        : _m3e.shapes.square;
     // circular-ish fab: use large radius to approach circle; actual size enforced by constraints
-    final radius = switch (size) { FabM3ESize.small => set.lg, FabM3ESize.regular => set.xl, FabM3ESize.large => set.xl };
+    final radius = switch (size) {
+      FabM3ESize.small => set.lg,
+      FabM3ESize.regular => set.xl,
+      FabM3ESize.large => set.xl
+    };
     return RoundedRectangleBorder(borderRadius: radius);
   }
 

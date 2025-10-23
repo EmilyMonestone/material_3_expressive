@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'slider_theme_m3e.dart';
+
 import 'enums.dart';
+import 'slider_theme_m3e.dart';
 
 class SliderM3E extends StatelessWidget {
   const SliderM3E({
@@ -63,7 +64,8 @@ class SliderM3E extends StatelessWidget {
       divisions: divisions,
       label: label,
       semanticFormatterCallback: semanticLabel != null
-          ? (v) => '$semanticLabel ${(100 * ((v - min) / (max - min))).toStringAsFixed(0)}%'
+          ? (v) =>
+              '$semanticLabel ${(100 * ((v - min) / (max - min))).toStringAsFixed(0)}%'
           : null,
     );
 

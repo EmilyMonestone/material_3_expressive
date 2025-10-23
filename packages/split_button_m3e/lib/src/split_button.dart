@@ -100,6 +100,11 @@ class _SplitButtonM3EState<T> extends State<SplitButtonM3E<T>> {
     final pressedRadius = widget.size.pressedRadius;
     final innerRadius = widget.size.innerCornerRadius;
     const innerGap = SplitButtonM3ETokens.innerGap;
+    // Elevated style needs larger perceived separation between segments.
+    final double effectiveInnerGap =
+        widget.emphasis == SplitButtonM3EEmphasis.elevated
+        ? innerGap * 2
+        : innerGap;
     final chevronTurns = _menuOpen
         ? SplitButtonM3ETokens.chevronOpenTurns
         : 0.0;
@@ -220,7 +225,9 @@ class _SplitButtonM3EState<T> extends State<SplitButtonM3E<T>> {
           if (!widget.enabled) return;
           setState(() => _trailingPressed = v);
         },
-        onTap: widget.enabled ? () => _openMenu(context) : null,
+        onTap: widget.enabled
+            ? () => _openMenu(_trailingKey.currentContext ?? context)
+            : null,
         child: Padding(
           padding: EdgeInsetsDirectional.only(
             start: trailingLeftPad,
@@ -241,18 +248,39 @@ class _SplitButtonM3EState<T> extends State<SplitButtonM3E<T>> {
       ),
     );
 
-    return FocusTraversalGroup(
-      policy: ReadingOrderTraversalPolicy(),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: minTap),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          textDirection: dir,
-          children: [
-            leading,
-            const SizedBox(width: innerGap),
-            trailing,
-          ],
+    // Menu theme to match SplitButton design (colors, font, shape)
+    final theme = Theme.of(context);
+    final m3e = context.m3e;
+    final bool contIsTransparent = cont.a == 0.0;
+    final Color menuColor = contIsTransparent
+        ? theme.colorScheme.surfaceContainerHigh
+        : cont;
+    final TextStyle? menuTextStyle = m3e.typography.base.labelLarge?.copyWith(
+      color: contIsTransparent ? theme.colorScheme.onSurface : onCont,
+    );
+    final shape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(widget.size.pressedRadius),
+    );
+
+    return PopupMenuTheme(
+      data: theme.popupMenuTheme.copyWith(
+        color: menuColor,
+        textStyle: menuTextStyle,
+        shape: shape,
+      ),
+      child: FocusTraversalGroup(
+        policy: ReadingOrderTraversalPolicy(),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: minTap),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            textDirection: dir,
+            children: [
+              leading,
+              SizedBox(width: effectiveInnerGap),
+              trailing,
+            ],
+          ),
         ),
       ),
     );
@@ -311,9 +339,21 @@ class _SplitButtonM3EState<T> extends State<SplitButtonM3E<T>> {
   Future<void> _openMenu(BuildContext context) async {
     if (widget.menuBuilder != null) {
       setState(() => _menuOpen = true);
+      // Enforce menu min width to trailing button width
+      Size _tSize = Size.zero;
+      final tCtx = _trailingKey.currentContext;
+      if (tCtx != null) {
+        final tb = tCtx.findRenderObject() as RenderBox?;
+        if (tb != null) _tSize = tb.size;
+      }
+      final double _minMenuWidth = _tSize.width > 0
+          ? _tSize.width
+          : widget.size.trailingWidthCentered;
+
       final res = await showMenu<T>(
         context: context,
         position: _menuPosition(context),
+        constraints: BoxConstraints(minWidth: _minMenuWidth),
         items: widget.menuBuilder!(context),
       );
       if (mounted) {
@@ -326,18 +366,54 @@ class _SplitButtonM3EState<T> extends State<SplitButtonM3E<T>> {
     // Convert simple items to PopupMenuEntries
     final items = widget.items!;
     setState(() => _menuOpen = true);
+
+    // Ensure menu item text/icon colors match the button's foreground (onCont)
+    final theme = Theme.of(context);
+    final m3e = context.m3e;
+    final (
+      Color _cont,
+      Color onCont,
+      BorderSide? _outlineSide,
+      double? _elevation,
+    ) = _resolveColorsAndShapes(
+      context,
+    );
+
+    // Enforce menu min width to trailing button width
+    Size _tSize = Size.zero;
+    final tCtx2 = _trailingKey.currentContext;
+    if (tCtx2 != null) {
+      final tb2 = tCtx2.findRenderObject() as RenderBox?;
+      if (tb2 != null) _tSize = tb2.size;
+    }
+    final double _minMenuWidth2 = _tSize.width > 0
+        ? _tSize.width
+        : widget.size.trailingWidthCentered;
+
     final res = await showMenu<T>(
       context: context,
       position: _menuPosition(context),
-      items: items
-          .map(
-            (e) => PopupMenuItem<T>(
-              value: e.value,
-              enabled: e.enabled,
-              child: e.child is Widget ? e.child as Widget : Text('${e.child}'),
-            ),
-          )
-          .toList(),
+      constraints: BoxConstraints(minWidth: _minMenuWidth2),
+      items: items.map((e) {
+        final Color effective = e.enabled
+            ? onCont
+            : onCont.withValues(alpha: 0.38);
+        final Widget baseChild = e.child is Widget
+            ? e.child as Widget
+            : Text('${e.child}');
+        final Widget styledChild = IconTheme.merge(
+          data: IconThemeData(color: effective, size: widget.size.iconPx),
+          child: DefaultTextStyle.merge(
+            style: TextStyle(color: effective),
+            child: baseChild,
+          ),
+        );
+        return PopupMenuItem<T>(
+          value: e.value,
+          enabled: e.enabled,
+          child: styledChild,
+        );
+      }).toList(),
     );
     if (!mounted) return;
     setState(() => _menuOpen = false);
@@ -345,41 +421,46 @@ class _SplitButtonM3EState<T> extends State<SplitButtonM3E<T>> {
   }
 
   RelativeRect _menuPosition(BuildContext context) {
-    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
-    final textDir = Directionality.of(context);
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
 
-    // Default to whole control if trailing key is missing
-    RenderBox? tb;
-    Offset tTopLeft = Offset.zero;
-    Size tSize = Size.zero;
-    final tCtx = _trailingKey.currentContext;
-    if (tCtx != null) {
-      tb = tCtx.findRenderObject() as RenderBox?;
-    }
-    if (tb != null) {
-      tTopLeft = tb.localToGlobal(Offset.zero);
-      tSize = tb.size;
-    } else {
-      final box = context.findRenderObject() as RenderBox?;
-      if (box != null) {
-        tTopLeft = box.localToGlobal(Offset.zero);
-        tSize = box.size;
-      }
+    // Prefer the trailing segment as the anchor, fallback to the whole control.
+    final BuildContext? tCtx = _trailingKey.currentContext;
+    RenderBox? targetBox = tCtx?.findRenderObject() as RenderBox?;
+    targetBox ??= context.findRenderObject() as RenderBox?;
+    if (targetBox == null) {
+      // If we can't resolve a box, fill as a safe (rare) fallback.
+      return RelativeRect.fill;
     }
 
-    final top = tTopLeft.dy + tSize.height;
+    final Offset targetTopLeft = targetBox.localToGlobal(
+      Offset.zero,
+      ancestor: overlay,
+    );
+    final Rect targetRect = Rect.fromLTWH(
+      targetTopLeft.dx,
+      targetTopLeft.dy,
+      targetBox.size.width,
+      targetBox.size.height,
+    );
 
+    // Place the menu just below the trailing segment with a small vertical gap,
+    // keeping horizontal alignment anchored to the trailing edge.
+    const double _kMenuVerticalOffset = 4.0;
+    final double top = targetRect.bottom + _kMenuVerticalOffset;
+
+    final TextDirection textDir = Directionality.of(context);
     late double left;
     late double right;
 
     if (textDir == TextDirection.ltr) {
-      final endX = tTopLeft.dx + tSize.width; // right edge
-      left = endX;
-      right = overlay.size.width - endX;
+      final double endX = targetRect.right; // trailing edge in LTR
+      left = 0.0;
+      right = overlay.size.width - endX; // align menu's right edge to endX
     } else {
-      final startX = tTopLeft.dx; // left edge is trailing in RTL
-      left = startX;
-      right = overlay.size.width - startX;
+      final double startX = targetRect.left; // trailing edge in RTL
+      left = startX; // align menu's left edge to startX
+      right = 0.0;
     }
 
     return RelativeRect.fromLTRB(left, top, right, overlay.size.height - top);

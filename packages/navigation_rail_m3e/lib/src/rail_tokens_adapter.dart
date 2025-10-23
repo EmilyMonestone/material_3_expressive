@@ -1,88 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:m3e_design/m3e_design.dart';
-import 'enums.dart';
+import 'package:m3e_design/m3e_design.dart' as m3e;
 
-@immutable
-class _RailMetrics {
-  final double widthCompact;
-  final double widthRegular;
-  final double extendedMinWidth;
-  final double iconSize;
-  final EdgeInsetsGeometry itemPadding;
-  final double stripeThickness;
-  const _RailMetrics({
-    required this.widthCompact,
-    required this.widthRegular,
-    required this.extendedMinWidth,
-    required this.iconSize,
-    required this.itemPadding,
-    required this.stripeThickness,
-  });
-}
+/// Provides colors & shapes from `m3e_design` with safe fallbacks to Theme.of(context).
+class NavigationRailTokensAdapter {
+  const NavigationRailTokensAdapter(this.context);
 
-_RailMetrics _metricsFor(BuildContext context, RailDensity density) {
-  final theme = Theme.of(context);
-  final m3e = theme.extension<M3ETheme>() ?? M3ETheme.defaults(theme.colorScheme);
-  final sp = m3e.spacing;
-
-  double wC = 64;   // compact width
-  double wR = 80;   // regular width
-  double ext = 256; // extended min width
-  double icon = 24;
-  double stripe = 3;
-
-  if (density == RailDensity.compact) {
-    wC -= 4; wR -= 4; stripe -= 1;
-  }
-
-  return _RailMetrics(
-    widthCompact: wC,
-    widthRegular: wR,
-    extendedMinWidth: ext,
-    iconSize: icon,
-    itemPadding: EdgeInsets.symmetric(horizontal: sp.md, vertical: sp.sm),
-    stripeThickness: stripe,
-  );
-}
-
-class RailTokensAdapter {
-  RailTokensAdapter(this.context);
   final BuildContext context;
 
-  M3ETheme get _m3e {
-    final t = Theme.of(context);
-    return t.extension<M3ETheme>() ?? M3ETheme.defaults(t.colorScheme);
+  ColorScheme get _cs => Theme.of(context).colorScheme;
+
+  // Colors per spec
+  Color get containerColor {
+    // Use surface container token if present, else fallback.
+    return _maybe(() => context.m3e.colors.surfaceContainer) ??
+        _cs.surfaceContainer;
   }
 
-  _RailMetrics metrics(RailDensity density) => _metricsFor(context, density);
-
-  // Container/background
-  Color containerColor() => _m3e.colors.surfaceContainerHigh;
-
-  // Indicator
-  Color indicatorColor() => _m3e.colors.secondaryContainer;
-
-  // Icon/label colors
-  Color selectedColor() => _m3e.colors.onSecondaryContainer;
-  Color unselectedColor() => _m3e.colors.onSurfaceVariant;
-
-  // Typography
-  TextStyle labelStyle() => _m3e.type.labelMedium;
-
-  // Shapes
-  ShapeBorder containerShape(RailShapeFamily family) {
-    final set = family == RailShapeFamily.round ? _m3e.shapes.round : _m3e.shapes.square;
-    return RoundedRectangleBorder(borderRadius: set.lg);
+  Color get activeIndicatorColor {
+    return _maybe(() => context.m3e.colors.secondaryContainer) ??
+        _cs.secondaryContainer;
   }
 
-  ShapeBorder indicatorShapePill() => const StadiumBorder();
+  Color get activeIconAndLabel {
+    return _maybe(() => context.m3e.colors.secondary) ?? _cs.secondary;
+  }
 
-  // Stripe decoration for selected destination
-  BoxDecoration stripeDecoration(Color color, double thickness) {
-    return BoxDecoration(
-      border: Border(
-        left: BorderSide(color: color, width: thickness),
-      ),
-    );
+  Color get inactiveIconAndLabel {
+    return _maybe(() => context.m3e.colors.onSurfaceVariant) ??
+        _cs.onSurfaceVariant;
+  }
+
+  Color get menuColor {
+    return _maybe(() => context.m3e.colors.onSecondaryContainer) ??
+        _cs.onSecondaryContainer;
+  }
+
+  Color get badgeLargeBackground =>
+      _maybe(() => context.m3e.colors.error) ?? _cs.error;
+  Color get badgeLargeLabel =>
+      _maybe(() => context.m3e.colors.onError) ?? _cs.onError;
+  Color get badgeSmallDot =>
+      _maybe(() => context.m3e.colors.error) ?? _cs.error;
+
+  ShapeBorder get indicatorShapeFull {
+    // Full corner per M3E: use the most rounded token, fallback to StadiumBorder.
+    final br = _maybe(() => context.m3e.shapes.round.xs);
+    if (br != null) return RoundedRectangleBorder(borderRadius: br);
+    return const StadiumBorder();
+  }
+
+  T? _maybe<T>(T Function() pick) {
+    try {
+      return pick();
+    } catch (_) {
+      return null;
+    }
   }
 }

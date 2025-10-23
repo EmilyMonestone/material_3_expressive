@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:m3e_design/m3e_design.dart';
+
 import 'enums.dart';
 
 @immutable
@@ -19,14 +19,15 @@ class ButtonMeasurements {
 
 @immutable
 class ButtonTokensAdapter {
-  const ButtonTokensAdapter(this.context, {this.smallPaddingDeprecated24 = false});
+  const ButtonTokensAdapter(this.context,
+      {this.smallPaddingDeprecated24 = false});
   final BuildContext context;
   final bool smallPaddingDeprecated24;
 
   M3ETheme get _m3e {
     final t = Theme.of(context);
     return t.extension<M3ETheme>() ?? M3ETheme.defaults(t.colorScheme);
-    }
+  }
 
   Color container(ButtonM3EStyle style) {
     final c = _m3e.colors;
@@ -59,17 +60,25 @@ class ButtonTokensAdapter {
 
   Color outline() => _m3e.colors.outline;
 
-  double elevation(ButtonM3EStyle style, Set<MaterialState> states) {
-    final hovered = states.contains(MaterialState.hovered);
-    final pressed = states.contains(MaterialState.pressed);
-    final disabled = states.contains(MaterialState.disabled);
+  double elevation(ButtonM3EStyle style, Set<WidgetState> states) {
+    final hovered = states.contains(WidgetState.hovered);
+    final pressed = states.contains(WidgetState.pressed);
+    final disabled = states.contains(WidgetState.disabled);
     if (disabled) return 0;
     switch (style) {
       case ButtonM3EStyle.elevated:
-        return pressed ? 0 : hovered ? 3 : 1;
+        return pressed
+            ? 0
+            : hovered
+                ? 3
+                : 1;
       case ButtonM3EStyle.filled:
       case ButtonM3EStyle.tonal:
-        return pressed ? 0 : hovered ? 1 : 0;
+        return pressed
+            ? 0
+            : hovered
+                ? 1
+                : 0;
       case ButtonM3EStyle.outlined:
       case ButtonM3EStyle.text:
         return 0;
@@ -91,12 +100,14 @@ class ButtonTokensAdapter {
     }
   }
 
-  double pressedRadius(ButtonM3ESize size) => (squareRadius(size) * 0.6).clamp(6, 18);
+  double pressedRadius(ButtonM3ESize size) =>
+      (squareRadius(size) * 0.6).clamp(6, 18);
 
   ButtonMeasurements measurements(ButtonM3ESize size) {
     switch (size) {
       case ButtonM3ESize.xs:
-        return const ButtonMeasurements(height: 32, hPadding: 12, iconSize: 20, iconGap: 4);
+        return const ButtonMeasurements(
+            height: 32, hPadding: 12, iconSize: 20, iconGap: 4);
       case ButtonM3ESize.sm:
         return ButtonMeasurements(
           height: 40,
@@ -105,11 +116,14 @@ class ButtonTokensAdapter {
           iconGap: 8,
         );
       case ButtonM3ESize.md:
-        return const ButtonMeasurements(height: 56, hPadding: 24, iconSize: 24, iconGap: 8);
+        return const ButtonMeasurements(
+            height: 56, hPadding: 24, iconSize: 24, iconGap: 8);
       case ButtonM3ESize.lg:
-        return const ButtonMeasurements(height: 96, hPadding: 48, iconSize: 32, iconGap: 12);
+        return const ButtonMeasurements(
+            height: 96, hPadding: 48, iconSize: 32, iconGap: 12);
       case ButtonM3ESize.xl:
-        return const ButtonMeasurements(height: 136, hPadding: 64, iconSize: 40, iconGap: 16);
+        return const ButtonMeasurements(
+            height: 136, hPadding: 64, iconSize: 40, iconGap: 16);
     }
   }
 }

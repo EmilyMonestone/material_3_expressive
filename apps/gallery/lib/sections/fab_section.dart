@@ -28,6 +28,13 @@ class FabSection extends StatelessWidget {
                       kind: kind,
                       size: size,
                       onPressed: onPressed),
+              for (final size in FabM3ESize.values)
+                FabM3E(
+                    icon: const Icon(Icons.add),
+                    kind: FabM3EKind.primary,
+                    size: size,
+                    shapeFamily: FabM3EShapeFamily.square,
+                    onPressed: onPressed),
             ],
           ),
           const SizedBox(height: 12),
