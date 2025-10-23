@@ -12,3 +12,21 @@
 - `flatS`  — track 8, gap 4, dot Ø4, dotOffset 2, trailing 8
 - `wavyM`  — track 4, wave amp 3, period 40, gap 4, dot Ø4, dotOffset 2, trailing 10
 - `wavyL`  — track 8, wave amp 3, period 40, gap 4, dot Ø4, dotOffset 2, trailing 14
+
+
+---
+
+## Live demo (Gallery)
+
+Explore this component in the M3E Gallery (GitHub Pages):
+
+https://<your-github-username>.github.io/material_3_expressive/
+
+To run the Gallery locally:
+
+```sh
+cd apps/gallery
+flutter run -d chrome
+```
+
+_Last updated: 2025-10-23_

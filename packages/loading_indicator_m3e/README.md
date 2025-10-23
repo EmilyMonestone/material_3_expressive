@@ -54,3 +54,21 @@ Pass `semanticLabel` and `semanticValue` to announce loading status if needed.
 ## License
 - Android/Compose implementation © Google, Apache-2.0
 - This package MIT
+
+
+---
+
+## Live demo (Gallery)
+
+Explore this component in the M3E Gallery (GitHub Pages):
+
+https://<your-github-username>.github.io/material_3_expressive/
+
+To run the Gallery locally:
+
+```sh
+cd apps/gallery
+flutter run -d chrome
+```
+
+_Last updated: 2025-10-23_

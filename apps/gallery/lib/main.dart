@@ -13,23 +13,53 @@ import 'package:m3e_gallery/sections/toolbar_section.dart';
 
 void main() => runApp(const GalleryApp());
 
-class GalleryApp extends StatelessWidget {
+class GalleryApp extends StatefulWidget {
   const GalleryApp({super.key});
 
   @override
+  State<GalleryApp> createState() => _GalleryAppState();
+}
+
+class _GalleryAppState extends State<GalleryApp> {
+  ThemeMode _mode = ThemeMode.light;
+
+  void _toggleMode() {
+    setState(() {
+      _mode = _mode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final base = ThemeData(useMaterial3: true, colorSchemeSeed: Colors.purple);
+    final baseLight = ThemeData(
+      useMaterial3: true,
+      colorSchemeSeed: Colors.purple,
+      brightness: Brightness.light,
+    );
+    final baseDark = ThemeData(
+      useMaterial3: true,
+      colorSchemeSeed: Colors.purple,
+      brightness: Brightness.dark,
+    );
     return MaterialApp(
       title: 'M3E Gallery',
-      theme: withM3ETheme(base),
-      home: const GalleryHome(),
+      theme: withM3ETheme(baseLight),
+      darkTheme: withM3ETheme(baseDark),
+      themeMode: _mode,
+      home: GalleryHome(
+        isDark: _mode == ThemeMode.dark,
+        onToggleBrightness: _toggleMode,
+      ),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
 class GalleryHome extends StatefulWidget {
-  const GalleryHome({super.key});
+  const GalleryHome({super.key, required this.isDark, required this.onToggleBrightness});
+
+  final bool isDark;
+  final VoidCallback onToggleBrightness;
 
   @override
   State<GalleryHome> createState() => _GalleryHomeState();
@@ -45,10 +75,16 @@ class _GalleryHomeState extends State<GalleryHome> {
     return Scaffold(
       appBar: AppBarM3E(
         titleText: 'M3E Gallery',
-        actions: const [
-          Icon(Icons.search),
-          SizedBox(width: 8),
-          Icon(Icons.more_vert),
+        actions: [
+          IconButton(
+            tooltip: widget.isDark ? 'Switch to light mode' : 'Switch to dark mode',
+            onPressed: widget.onToggleBrightness,
+            icon: Icon(widget.isDark ? Icons.dark_mode : Icons.light_mode),
+          ),
+          const SizedBox(width: 8),
+          const Icon(Icons.search),
+          const SizedBox(width: 8),
+          const Icon(Icons.more_vert),
         ],
       ),
       body: const SectionedGallery(),

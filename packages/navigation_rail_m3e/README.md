@@ -49,3 +49,20 @@ NavigationRailM3E(
 ```
 
 See the `/example` app for a runnable demo.
+
+---
+
+## Live demo (Gallery)
+
+Explore this component in the M3E Gallery (GitHub Pages):
+
+https://<your-github-username>.github.io/material_3_expressive/
+
+To run the Gallery locally:
+
+```sh
+cd apps/gallery
+flutter run -d chrome
+```
+
+_Last updated: 2025-10-23_

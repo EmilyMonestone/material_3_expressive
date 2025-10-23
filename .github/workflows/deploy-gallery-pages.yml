@@ -31,10 +31,16 @@ jobs:
           channel: "stable"
 
       - name: Flutter version
+        working-directory: apps/gallery
         run: flutter --version
 
       - name: Enable web
+        working-directory: apps/gallery
         run: flutter config --enable-web
+
+      - name: Create web
+        working-directory: apps/gallery
+        run: flutter create . --platforms web --overwrite
 
       - name: Pub get
         working-directory: apps/gallery
