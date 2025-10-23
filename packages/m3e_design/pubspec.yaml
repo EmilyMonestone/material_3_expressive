@@ -8,9 +8,9 @@ environment:
   sdk: ">=3.5.0 <4.0.0"
 
 dependencies:
+  dynamic_color: ^1.8.1
   flutter:
     sdk: flutter
-  dynamic_color: ^1.8.1
 
 dev_dependencies:
   flutter_test:

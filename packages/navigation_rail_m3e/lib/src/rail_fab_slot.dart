@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:fab_m3e/fab_m3e.dart'
     show FabM3EKind, FabM3ESize, FabM3EShapeFamily, FabM3EDensity;
+import 'package:flutter/material.dart';
 
 /// Configuration for the rail's built-in FAB.
 ///
