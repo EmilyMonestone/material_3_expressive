@@ -1,0 +1,64 @@
+# .github/workflows/deploy-gallery-pages.yml
+name: Build & Deploy Gallery (GitHub Pages)
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "apps/gallery/**"
+      - ".github/workflows/deploy-gallery-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write        # required for actions/deploy-pages
+  id-token: write     # required for actions/deploy-pages OIDC
+
+concurrency:
+  group: "pages-gallery"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+
+      - name: Flutter version
+        run: flutter --version
+
+      - name: Enable web
+        run: flutter config --enable-web
+
+      - name: Pub get
+        working-directory: apps/gallery
+        run: flutter pub get
+
+      - name: Build web (release)
+        working-directory: apps/gallery
+        run: |
+          # IMPORTANT: Set base-href to your repository name if using /<user>.github.io/<repo>
+          flutter build web --release --base-href "/material_3_expressive/"
+          # If you use a custom domain on Pages, set --base-href "/" instead.
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/gallery/build/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
