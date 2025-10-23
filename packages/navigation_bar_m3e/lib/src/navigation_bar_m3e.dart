@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:m3e_design/m3e_design.dart';
+
 import 'enums.dart';
-import 'nav_tokens_adapter.dart';
 import 'nav_destination_m3e.dart';
+import 'nav_tokens_adapter.dart';
 
 class NavigationBarM3E extends StatelessWidget {
   const NavigationBarM3E({
@@ -10,7 +11,7 @@ class NavigationBarM3E extends StatelessWidget {
     required this.destinations,
     this.selectedIndex = 0,
     this.onDestinationSelected,
-    this.labelBehavior = NavBarM3ELabelBehavior.onlySelected,
+    this.labelBehavior = NavBarM3ELabelBehavior.alwaysShow,
     this.size = NavBarM3ESize.medium,
     this.shapeFamily = NavBarM3EShapeFamily.round,
     this.density = NavBarM3EDensity.regular,
@@ -49,9 +50,12 @@ class NavigationBarM3E extends StatelessWidget {
 
     final tokens = NavTokensAdapter(context);
     final metrics = tokens.metrics(density);
-    final m3e = Theme.of(context).extension<M3ETheme>() ?? M3ETheme.defaults(Theme.of(context).colorScheme);
+    final m3e = Theme.of(context).extension<M3ETheme>() ??
+        M3ETheme.defaults(Theme.of(context).colorScheme);
 
-    final height = size == NavBarM3ESize.small ? metrics.heightSmall : metrics.heightMedium;
+    final height = size == NavBarM3ESize.small
+        ? metrics.heightSmall
+        : metrics.heightMedium;
     final bg = backgroundColor ?? tokens.containerColor();
     final shape = tokens.containerShape(shapeFamily);
 
@@ -69,21 +73,27 @@ class NavigationBarM3E extends StatelessWidget {
               : (indicatorColor ?? tokens.indicatorColor()),
           indicatorShape: switch (indicatorStyle) {
             NavBarM3EIndicatorStyle.pill => tokens.indicatorShapePill(),
-            NavBarM3EIndicatorStyle.underline => const StadiumBorder(), // we'll fake underline via decoration below
+            NavBarM3EIndicatorStyle.underline =>
+              const StadiumBorder(), // we'll fake underline via decoration below
             NavBarM3EIndicatorStyle.none => const StadiumBorder(),
           },
-          backgroundColor: Colors.transparent, // outer Material supplies bg + shape
+          backgroundColor:
+              Colors.transparent, // outer Material supplies bg + shape
           labelBehavior: switch (labelBehavior) {
-            NavBarM3ELabelBehavior.alwaysShow => NavigationDestinationLabelBehavior.alwaysShow,
-            NavBarM3ELabelBehavior.onlySelected => NavigationDestinationLabelBehavior.onlyShowSelected,
-            NavBarM3ELabelBehavior.alwaysHide => NavigationDestinationLabelBehavior.alwaysHide,
+            NavBarM3ELabelBehavior.alwaysShow =>
+              NavigationDestinationLabelBehavior.alwaysShow,
+            NavBarM3ELabelBehavior.onlySelected =>
+              NavigationDestinationLabelBehavior.onlyShowSelected,
+            NavBarM3ELabelBehavior.alwaysHide =>
+              NavigationDestinationLabelBehavior.alwaysHide,
           },
           selectedIndex: selectedIndex,
           destinations: List.generate(destinations.length, (i) {
             final d = destinations[i];
             return NavigationDestination(
               icon: _icon(context, false, d, metrics.iconSize),
-              selectedIcon: _selectedIcon(context, true, d, metrics.iconSize, tokens, indicatorStyle),
+              selectedIcon: _selectedIcon(
+                  context, true, d, metrics.iconSize, tokens, indicatorStyle),
               label: d.label,
               tooltip: d.semanticLabel,
             );
@@ -100,22 +110,29 @@ class NavigationBarM3E extends StatelessWidget {
 
     final content = DefaultTextStyle.merge(
       style: tokens.labelStyle().copyWith(
-        color: m3e.colors.onSurfaceVariant,
-      ),
+            color: m3e.colors.onSurfaceVariant,
+          ),
       child: IconTheme.merge(
-        data: IconThemeData(size: metrics.iconSize, color: m3e.colors.onSurfaceVariant),
+        data: IconThemeData(
+            size: metrics.iconSize, color: m3e.colors.onSurfaceVariant),
         child: padded,
       ),
     );
 
     if (!safeArea && semanticLabel == null) return content;
-    final wrapped = SafeArea(top: false, left: false, right: false, bottom: safeArea, child: content);
+    final wrapped = SafeArea(
+        top: false,
+        left: false,
+        right: false,
+        bottom: safeArea,
+        child: content);
 
     if (semanticLabel == null) return wrapped;
     return Semantics(container: true, label: semanticLabel!, child: wrapped);
   }
 
-  Widget _icon(BuildContext context, bool selected, NavigationDestinationM3E d, double iconSize) {
+  Widget _icon(BuildContext context, bool selected, NavigationDestinationM3E d,
+      double iconSize) {
     return SizedBox(
       width: iconSize + 8, // give a little space for underline
       height: iconSize + 8,
@@ -135,7 +152,8 @@ class NavigationBarM3E extends StatelessWidget {
     if (style != NavBarM3EIndicatorStyle.underline) return w;
 
     final metrics = tokens.metrics(density);
-    final deco = tokens.underlineDecoration(tokens.indicatorColor(), metrics.indicatorThickness);
+    final deco = tokens.underlineDecoration(
+        tokens.indicatorColor(), metrics.indicatorThickness);
     return DecoratedBox(
       decoration: deco,
       child: w,

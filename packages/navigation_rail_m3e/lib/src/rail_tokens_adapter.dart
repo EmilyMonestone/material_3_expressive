@@ -35,7 +35,7 @@ class NavigationRailTokensAdapter {
         _cs.onSecondaryContainer;
   }
 
-  Color get badgeLargeBackground =>
+  Color get badgeBackground =>
       _maybe(() => context.m3e.colors.error) ?? _cs.error;
   Color get badgeLargeLabel =>
       _maybe(() => context.m3e.colors.onError) ?? _cs.onError;

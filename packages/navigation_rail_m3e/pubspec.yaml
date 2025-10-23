@@ -18,6 +18,9 @@ dependencies:
   # Icon button used by the rail's menu control.
   icon_button_m3e:
     path: ../icon_button_m3e
+  # Buttons used by rail items in expanded state.
+  button_m3e:
+    path: ../button_m3e
 
 dev_dependencies:
   flutter_test:

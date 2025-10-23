@@ -6,8 +6,7 @@ class NavigationRailM3EDestination {
     required this.icon,
     this.selectedIcon,
     required this.label,
-    this.largeBadgeCount,
-    this.smallBadge = false,
+    this.badgeCount,
     this.semanticLabel,
     this.short = false,
   });
@@ -15,8 +14,7 @@ class NavigationRailM3EDestination {
   final Widget icon;
   final Widget? selectedIcon;
   final String label;
-  final int? largeBadgeCount;
-  final bool smallBadge;
+  final int? badgeCount;
   final String? semanticLabel;
 
   /// If true, uses short item height (56dp) instead of 64dp.

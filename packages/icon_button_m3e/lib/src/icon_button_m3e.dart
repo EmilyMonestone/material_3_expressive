@@ -10,6 +10,7 @@ import 'enums.dart';
 /// - Shapes: round (pill) or square (rounded rect). Toggle can flip shape when selected.
 /// - Widths: default, narrow, wide
 /// - Toggle: [isSelected] + [selectedIcon]
+///  - Badge: [string] or [number]
 class IconButtonM3E extends StatelessWidget {
   const IconButtonM3E({
     super.key,
@@ -24,6 +25,7 @@ class IconButtonM3E extends StatelessWidget {
     this.isSelected,
     this.selectedIcon,
     this.enableFeedback,
+    this.badgeValue,
   });
 
   final Widget icon;
@@ -37,6 +39,7 @@ class IconButtonM3E extends StatelessWidget {
   final bool? isSelected;
   final Widget? selectedIcon;
   final bool? enableFeedback;
+  final Object? badgeValue;
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +126,46 @@ class IconButtonM3E extends StatelessWidget {
         child: SizedBox(
           width: visual.width,
           height: visual.height,
-          child: button,
+          child: () {
+            final Object? v = badgeValue;
+            Widget? badge;
+            if (v == null) {
+              badge = null;
+            } else if (v is num) {
+              final int c = v.round().clamp(0, 999999);
+              badge = Badge.count(
+                count: c,
+                backgroundColor: scheme.error,
+                textColor: scheme.onError,
+              );
+            } else if (v is String) {
+              if (v.isEmpty) {
+                badge = null;
+              } else {
+                badge = Badge(
+                  label: Text(v),
+                  backgroundColor: scheme.error,
+                  textColor: scheme.onError,
+                );
+              }
+            } else {
+              assert(() {
+                throw FlutterError(
+                  'IconButtonM3E.badgeValue must be a String or num, but got \'${v.runtimeType}\'.',
+                );
+              }());
+              badge = null;
+            }
+            return badge == null
+                ? button
+                : Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      button,
+                      PositionedDirectional(top: 0, end: 0, child: badge),
+                    ],
+                  );
+          }(),
         ),
       ),
     );

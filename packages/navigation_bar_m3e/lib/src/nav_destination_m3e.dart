@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+
 import 'nav_badge_m3e.dart';
 
 class NavigationDestinationM3E {
@@ -15,7 +17,7 @@ class NavigationDestinationM3E {
   final Widget? selectedIcon;
   final String label;
 
-  /// Optional badge counter
+  /// Optional badgeValue counter
   final int? badgeCount;
 
   /// If true, show a small dot instead of a counter.

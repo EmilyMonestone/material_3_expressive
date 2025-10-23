@@ -1,20 +1,19 @@
-import 'dart:ui' show FontFeature;
 import 'package:flutter/material.dart';
 
 import 'rail_tokens_adapter.dart';
 
-/// Large numeric badge for rail items (0..999+). One class per file.
+/// Large numeric badgeValue for rail items (0..999+). One class per file.
 class RailBadgeM3E extends StatelessWidget {
-  /// Creates a large numeric badge.
+  /// Creates a large numeric badgeValue.
   const RailBadgeM3E({
     super.key,
-    required this.count,
+    this.count,
     this.maxDigits = 3,
     this.dense = false,
   });
 
-  /// The numeric value to display in the badge.
-  final int count;
+  /// The numeric value to display in the badgeValue.
+  final int? count;
 
   /// Maximum digits before showing a trailing '+' (e.g. 999+).
   final int maxDigits;
@@ -24,25 +23,37 @@ class RailBadgeM3E extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (count == null) {
+      return const SizedBox.shrink();
+    }
     final tokens = NavigationRailTokensAdapter(context);
-    final String text = count > (10 * (pow10(maxDigits) - 1))
+    final String text = count! > (10 * (pow10(maxDigits) - 1))
         ? '${pow10(maxDigits) - 1}+'
         : '$count';
     final double pad = dense ? 2 : 4;
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: pad + 2, vertical: pad),
-      decoration: BoxDecoration(
-        color: tokens.badgeLargeBackground,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: DefaultTextStyle(
-        style: Theme.of(context).textTheme.labelSmall!.copyWith(
-          color: tokens.badgeLargeLabel,
-          fontFeatures: const [FontFeature.tabularFigures()],
-        ),
-        child: Text(text, maxLines: 1),
-      ),
-    );
+    return count == 0
+        ? Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: tokens.badgeBackground,
+              shape: BoxShape.circle,
+            ),
+          )
+        : Container(
+            padding: EdgeInsets.symmetric(horizontal: pad + 2, vertical: pad),
+            decoration: BoxDecoration(
+              color: tokens.badgeBackground,
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: DefaultTextStyle(
+              style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                color: tokens.badgeLargeLabel,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+              child: Text(text, maxLines: 1),
+            ),
+          );
   }
 
   /// Returns 10 to the power of [n].
@@ -52,5 +63,21 @@ class RailBadgeM3E extends StatelessWidget {
       v *= 10;
     }
     return v;
+  }
+}
+
+class _SmallDot extends StatelessWidget {
+  const _SmallDot({required this.color});
+  final Color color;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 8,
+      height: 8,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+      ),
+    );
   }
 }

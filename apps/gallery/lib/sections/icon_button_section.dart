@@ -33,6 +33,24 @@ class IconButtonSection extends StatelessWidget {
               ],
             ),
           ],
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Text('with badgeValue',
+                style: Theme.of(context).textTheme.titleMedium),
+          ),
+          Row(
+            spacing: 12,
+            children: [
+              for (final size in IconButtonM3ESize.values)
+                IconButtonM3E(
+                  icon: const Icon(Icons.favorite),
+                  variant: IconButtonM3EVariant.filled,
+                  size: size,
+                  onPressed: () {},
+                  badgeValue: size.index + 1,
+                ),
+            ],
+          )
         ],
       ),
     );

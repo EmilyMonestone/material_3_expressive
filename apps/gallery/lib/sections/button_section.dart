@@ -41,6 +41,26 @@ class ButtonSection extends StatelessWidget {
               ),
             ],
           ],
+          Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 4),
+            child: Text('with Icon',
+                style: Theme.of(context).textTheme.labelLarge),
+          ),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: [
+              for (final variant in ButtonM3EStyle.values)
+                ButtonM3E(
+                  icon: Icon(Icons.add),
+                  label: Text(variant.name),
+                  style: variant,
+                  size: ButtonM3ESize.sm,
+                  shape: ButtonM3EShape.round,
+                  onPressed: () {},
+                ),
+            ],
+          ),
         ],
       ),
     );

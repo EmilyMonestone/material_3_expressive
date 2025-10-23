@@ -16,7 +16,7 @@ scripts:
   test: melos exec -- flutter test --coverage
   create:
     run: dart run tool/create_component.dart
-    description: Scaffold a new [component]_m3e package (melos run create -- name=badge)
+    description: Scaffold a new [component]_m3e package (melos run create -- name=badgeValue)
   pub-dry-run:
     run: melos exec -c 1 --no-private -- "flutter pub publish --dry-run"
     description: Run 'flutter pub publish --dry-run' in all publishable packages

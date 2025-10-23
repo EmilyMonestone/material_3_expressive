@@ -26,6 +26,7 @@ class NavigationRailM3E extends StatefulWidget {
     this.expandedWidth,
     this.onDismissModal,
     this.onTypeChanged,
+    this.labelBehavior = NavigationRailM3ELabelBehavior.alwaysShow,
   });
 
   /// Presentation type for the rail (collapsed or expanded).
@@ -58,6 +59,9 @@ class NavigationRailM3E extends StatefulWidget {
   /// Called when the built-in menu button toggles the rail type.
   final ValueChanged<NavigationRailM3EType>? onTypeChanged;
 
+  /// Controls how labels are shown when the rail is expanded.
+  final NavigationRailM3ELabelBehavior labelBehavior;
+
   @override
   State<NavigationRailM3E> createState() => _NavigationRailM3EState();
 }
@@ -65,10 +69,15 @@ class NavigationRailM3E extends StatefulWidget {
 class _NavigationRailM3EState extends State<NavigationRailM3E>
     with TickerProviderStateMixin {
   OverlayEntry? _modalEntry;
+  OverlayEntry? _collapsedPeekEntry;
+  final LayerLink _anchor = LayerLink();
+  bool _suppressInk = false;
 
   bool get _isExpanded => widget.type == NavigationRailM3EType.expanded;
   bool get _isModal => widget.modality == NavigationRailM3EModality.modal;
-  bool get _needsOverlay => _isModal;
+  bool get _needsOverlay => _isModal && _isExpanded;
+  bool get _needsCollapsedPeek =>
+      !_isExpanded && !_isModal && widget.hideWhenCollapsed;
 
   @override
   void initState() {
@@ -79,17 +88,29 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
   @override
   void didUpdateWidget(covariant NavigationRailM3E oldWidget) {
     super.didUpdateWidget(oldWidget);
+
+    // Suppress ink effects briefly during type transitions to avoid flicker.
+    if (oldWidget.type != widget.type) {
+      setState(() => _suppressInk = true);
+      Future.delayed(const Duration(milliseconds: 320), () {
+        if (mounted) setState(() => _suppressInk = false);
+      });
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) => _syncOverlay());
   }
 
   @override
   void dispose() {
     _removeOverlay();
+    _removeCollapsedPeekOverlay();
     super.dispose();
   }
 
   void _syncOverlay() {
     if (!mounted) return;
+
+    // Expanded modal overlay management
     if (_needsOverlay) {
       if (_modalEntry == null) {
         _insertOverlay();
@@ -98,6 +119,17 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
       }
     } else {
       _removeOverlay();
+    }
+
+    // Collapsed peek overlay management (standard modality with hideWhenCollapsed)
+    if (_needsCollapsedPeek) {
+      if (_collapsedPeekEntry == null) {
+        _insertCollapsedPeekOverlay();
+      } else {
+        _collapsedPeekEntry!.markNeedsBuild();
+      }
+    } else {
+      _removeCollapsedPeekOverlay();
     }
   }
 
@@ -111,6 +143,19 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
   void _removeOverlay() {
     _modalEntry?.remove();
     _modalEntry = null;
+  }
+
+  void _insertCollapsedPeekOverlay() {
+    final overlay = Overlay.of(context, rootOverlay: true);
+    if (overlay == null) return;
+    _collapsedPeekEntry =
+        OverlayEntry(builder: (ctx) => _buildCollapsedPeekOverlay(ctx));
+    overlay.insert(_collapsedPeekEntry!);
+  }
+
+  void _removeCollapsedPeekOverlay() {
+    _collapsedPeekEntry?.remove();
+    _collapsedPeekEntry = null;
   }
 
   Widget _buildModalOverlay(BuildContext context) {
@@ -143,6 +188,39 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
     );
   }
 
+  Widget _buildCollapsedPeekOverlay(BuildContext context) {
+    // A small floating menu button anchored to the rail's target, visible when
+    // the rail is fully hidden (hideWhenCollapsed == true).
+    Widget btn = IconButtonM3E(
+      icon: const Icon(Icons.menu),
+      tooltip: 'Expand',
+      onPressed: widget.onTypeChanged == null
+          ? null
+          : () => widget.onTypeChanged!(NavigationRailM3EType.expanded),
+    );
+    if (_suppressInk) {
+      final t = Theme.of(context);
+      btn = Theme(
+        data: t.copyWith(
+          splashFactory: NoSplash.splashFactory,
+          hoverColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+        child: btn,
+      );
+    }
+
+    return CompositedTransformFollower(
+      link: _anchor,
+      showWhenUnlinked: false,
+      offset: const Offset(8, 36), // slight inset and same top spacing as rail
+      child: Material(
+        type: MaterialType.transparency,
+        child: btn,
+      ),
+    );
+  }
+
   double _targetWidth(BuildContext context) {
     final theme = Theme.of(context).extension<NavigationRailM3ETheme>() ??
         const NavigationRailM3ETheme();
@@ -157,21 +235,35 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
   Widget _buildMenuButton(BuildContext context,
       {required Alignment alignment}) {
     final isExpanded = _isExpanded;
+    Widget button = IconButtonM3E(
+      icon: Icon(isExpanded ? Icons.menu_open : Icons.menu),
+      tooltip: isExpanded ? 'Collapse' : 'Expand',
+      onPressed: widget.onTypeChanged == null
+          ? null
+          : () => widget.onTypeChanged!(
+                isExpanded
+                    ? NavigationRailM3EType.collapsed
+                    : NavigationRailM3EType.expanded,
+              ),
+    );
+
+    if (_suppressInk) {
+      final t = Theme.of(context);
+      button = Theme(
+        data: t.copyWith(
+          splashFactory: NoSplash.splashFactory,
+          hoverColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+        child: button,
+      );
+    }
+
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: 16, end: 16, bottom: 12),
       child: Align(
         alignment: alignment,
-        child: IconButtonM3E(
-          icon: Icon(isExpanded ? Icons.menu_open : Icons.menu),
-          tooltip: isExpanded ? 'Collapse' : 'Expand',
-          onPressed: widget.onTypeChanged == null
-              ? null
-              : () => widget.onTypeChanged!(
-                    isExpanded
-                        ? NavigationRailM3EType.collapsed
-                        : NavigationRailM3EType.expanded,
-                  ),
-        ),
+        child: button,
       ),
     );
   }
@@ -193,7 +285,7 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
               size: fab.size,
               shapeFamily: FabM3EShapeFamily.square,
               density: fab.density,
-              elevation: fab.elevation,
+              elevation: 0,
               semanticLabel: fab.semanticLabel,
             )
           : FabM3E(
@@ -205,13 +297,14 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
               size: fab.size,
               shapeFamily: FabM3EShapeFamily.square,
               density: fab.density,
-              elevation: fab.elevation,
+              elevation: 0,
               semanticLabel: fab.semanticLabel,
             ),
     );
   }
 
-  List<Widget> _buildChildren(BuildContext context) {
+  List<Widget> _buildChildren(BuildContext context,
+      {required bool showLabels}) {
     final theme = Theme.of(context).extension<NavigationRailM3ETheme>() ??
         const NavigationRailM3ETheme();
     final isExpanded = _isExpanded;
@@ -250,6 +343,8 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
               selected: index == widget.selectedIndex,
               onTap: () => widget.onDestinationSelected(index),
               expanded: true,
+              labelBehavior: widget.labelBehavior,
+              suppressInk: _suppressInk,
             ),
           ));
         }
@@ -265,6 +360,8 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
             selected: i == widget.selectedIndex,
             onTap: () => widget.onDestinationSelected(i),
             expanded: false,
+            labelBehavior: widget.labelBehavior,
+            suppressInk: _suppressInk,
           ),
         ));
       }
@@ -280,9 +377,14 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
       curve: Curves.easeOutCubic,
       width: width,
       decoration: BoxDecoration(color: tokens.containerColor),
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: _buildChildren(context),
+      child: LayoutBuilder(
+        builder: (ctx, constraints) {
+          final showLabels = _isExpanded && constraints.maxWidth >= 180;
+          return ListView(
+            padding: EdgeInsets.zero,
+            children: _buildChildren(ctx, showLabels: showLabels),
+          );
+        },
       ),
     );
   }
@@ -292,13 +394,11 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
     // Keep overlay in sync after build completes to avoid layout side-effects.
     WidgetsBinding.instance.addPostFrameCallback((_) => _syncOverlay());
 
-    if (_needsOverlay) {
-      // When showing modal via overlay, render nothing in the layout slot so
-      // content underneath can occupy the width. The overlay covers it.
-      return const SizedBox.shrink();
-    }
+    final Widget child =
+        _needsOverlay ? const SizedBox.shrink() : _buildRailCore(context);
 
-    return _buildRailCore(context);
+    // Always provide an anchor target for positioning collapsed peek overlay.
+    return CompositedTransformTarget(link: _anchor, child: child);
   }
 
   static int _destinationIndex(List<NavigationRailM3ESection> sections,
