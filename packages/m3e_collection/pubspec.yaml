@@ -12,17 +12,17 @@ dependencies:
     sdk: flutter
   material_new_shapes: ^1.0.0
   expressive_refresh: ^0.1.2
-  m3e_design:
-  icon_button_m3e:
-  split_button_m3e:
-  button_group_m3e:
-  app_bar_m3e:
-  button_m3e:
-  fab_m3e:
-  loading_indicator_m3e:
-  progress_indicator_m3e:
-  navigation_bar_m3e:
-  navigation_rail_m3e:
-  slider_m3e:
-  toolbar_m3e:
+  m3e_design: ^0.1.0
+  icon_button_m3e: ^0.1.0
+  split_button_m3e: ^0.1.0
+  button_group_m3e: ^0.1.0
+  app_bar_m3e: ^0.1.0
+  button_m3e: ^0.1.0
+  fab_m3e: ^0.1.0
+  loading_indicator_m3e: ^0.1.0
+  progress_indicator_m3e: ^0.1.0
+  navigation_bar_m3e: ^0.1.0
+  navigation_rail_m3e: ^0.1.0
+  slider_m3e: ^0.1.0
+  toolbar_m3e: ^0.1.0
 

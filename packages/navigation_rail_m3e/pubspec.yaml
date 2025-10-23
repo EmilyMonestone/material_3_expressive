@@ -11,10 +11,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  m3e_design:
-  fab_m3e:
-  icon_button_m3e:
-  button_m3e:
+  m3e_design: ^0.1.0
+  fab_m3e: ^0.1.0
+  icon_button_m3e: ^0.1.0
+  button_m3e: ^0.1.0
 
 
 dev_dependencies:
