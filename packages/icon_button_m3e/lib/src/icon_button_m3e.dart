@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:m3e_design/m3e_design.dart';
 
 import 'enums.dart';
 
@@ -44,6 +45,7 @@ class IconButtonM3E extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final m3e = context.m3e;
 
     final Size visual = size.visual(width);
     final Size target = size.target(width);
@@ -133,19 +135,27 @@ class IconButtonM3E extends StatelessWidget {
               badge = null;
             } else if (v is num) {
               final int c = v.round().clamp(0, 999999);
-              badge = Badge.count(
-                count: c,
-                backgroundColor: scheme.error,
-                textColor: scheme.onError,
-              );
+              if (c == 0) {
+                badge = Badge(
+                  smallSize: 8,
+                  backgroundColor: m3e.colors.primary,
+                  textColor: m3e.colors.onPrimary,
+                );
+              } else {
+                badge = Badge.count(
+                  count: c,
+                  backgroundColor: m3e.colors.primary,
+                  textColor: m3e.colors.onPrimary,
+                );
+              }
             } else if (v is String) {
               if (v.isEmpty) {
                 badge = null;
               } else {
                 badge = Badge(
                   label: Text(v),
-                  backgroundColor: scheme.error,
-                  textColor: scheme.onError,
+                  backgroundColor: m3e.colors.primary,
+                  textColor: m3e.colors.onPrimary,
                 );
               }
             } else {

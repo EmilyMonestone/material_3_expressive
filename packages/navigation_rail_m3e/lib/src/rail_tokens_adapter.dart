@@ -36,11 +36,9 @@ class NavigationRailTokensAdapter {
   }
 
   Color get badgeBackground =>
-      _maybe(() => context.m3e.colors.error) ?? _cs.error;
+      _maybe(() => context.m3e.colors.primary) ?? _cs.primary;
   Color get badgeLargeLabel =>
-      _maybe(() => context.m3e.colors.onError) ?? _cs.onError;
-  Color get badgeSmallDot =>
-      _maybe(() => context.m3e.colors.error) ?? _cs.error;
+      _maybe(() => context.m3e.colors.onPrimary) ?? _cs.onPrimary;
 
   ShapeBorder get indicatorShapeFull {
     // Full corner per M3E: use the most rounded token, fallback to StadiumBorder.

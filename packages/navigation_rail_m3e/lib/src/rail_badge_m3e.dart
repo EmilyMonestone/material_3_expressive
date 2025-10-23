@@ -65,19 +65,3 @@ class RailBadgeM3E extends StatelessWidget {
     return v;
   }
 }
-
-class _SmallDot extends StatelessWidget {
-  const _SmallDot({required this.color});
-  final Color color;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 8,
-      height: 8,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-      ),
-    );
-  }
-}

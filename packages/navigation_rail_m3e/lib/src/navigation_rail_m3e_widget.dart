@@ -135,7 +135,6 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
 
   void _insertOverlay() {
     final overlay = Overlay.of(context, rootOverlay: true);
-    if (overlay == null) return;
     _modalEntry = OverlayEntry(builder: (ctx) => _buildModalOverlay(ctx));
     overlay.insert(_modalEntry!);
   }
@@ -147,7 +146,6 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
 
   void _insertCollapsedPeekOverlay() {
     final overlay = Overlay.of(context, rootOverlay: true);
-    if (overlay == null) return;
     _collapsedPeekEntry =
         OverlayEntry(builder: (ctx) => _buildCollapsedPeekOverlay(ctx));
     overlay.insert(_collapsedPeekEntry!);

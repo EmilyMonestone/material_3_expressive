@@ -368,8 +368,6 @@ class _SplitButtonM3EState<T> extends State<SplitButtonM3E<T>> {
     setState(() => _menuOpen = true);
 
     // Ensure menu item text/icon colors match the button's foreground (onCont)
-    final theme = Theme.of(context);
-    final m3e = context.m3e;
     final (
       Color _cont,
       Color onCont,
