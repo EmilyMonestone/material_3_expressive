@@ -31,3 +31,6 @@ scripts:
       noPrivate: true
       dirExists:
         - lib
+  set-version:
+    run: dart run tool/update_versions.dart
+    description: "Set version for all packages (usage: melos run set-version -- version=1.2.3)"

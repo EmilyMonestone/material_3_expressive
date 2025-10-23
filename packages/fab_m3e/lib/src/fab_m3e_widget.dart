@@ -17,5 +17,3 @@ class FabM3EWidget extends StatelessWidget {
     );
   }
 }
-
-String _pascal(String s) => s.split('_').map((p) => p.isEmpty ? '' : (p[0].toUpperCase() + p.substring(1))).join();

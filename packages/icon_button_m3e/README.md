@@ -108,3 +108,51 @@ flutter run -d chrome
 ```
 
 _Last updated: 2025-10-23_
+
+
+---
+
+## Detailed Guide
+
+### What this package provides
+Material 3 Expressive IconButtonM3E with multiple sizes, variants (filled/tonal/outlined/standard), round/square shapes, optional toggle selection, and accessible 48×48dp hit targets.
+
+### Installation
+- Monorepo (local path): already part of this repo.
+- Pub (when published):
+```yaml
+dependencies:
+  icon_button_m3e: ^0.1.1
+```
+
+Minimum SDK: Dart >=3.9.2; Flutter >=1.17.0.
+
+### Dependencies
+- flutter
+
+### Quick start
+```dart
+IconButtonM3E.filled(
+  icon: const Icon(Icons.favorite),
+  onPressed: () {},
+  size: IconButtonM3ESize.md,
+  shapeFamily: IconButtonM3EShapeFamily.round,
+)
+```
+
+### Key parameters
+- icon: Widget — Required.
+- onPressed / onLongPress: callbacks for activation.
+- isSelected: bool — Toggle state for selectable variants.
+- variant: IconButtonM3EVariant — filled | tonal | outlined | standard.
+- size: IconButtonM3ESize — xs | sm | md | lg.
+- shapeFamily: IconButtonM3EShapeFamily — round | square.
+- tooltip / semanticsLabel: String? — A11y hints.
+
+### Accessibility
+- Ensures minimum 48×48 dp touch target; focus and hover visuals included.
+
+### Links
+- Repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/icon_button_m3e
+- Issue tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
+- Changelog: ./CHANGELOG.md

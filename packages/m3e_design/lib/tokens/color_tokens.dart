@@ -174,33 +174,6 @@ class M3EColors {
     Color _surfaceDim() => _blend(s.surface, s.onSurface, 0.05);
     Color _surfaceBright() => _blend(s.surface, s.primary, 0.04);
 
-    Function(Invocation invocation)? _tryGet<T>(
-        ColorScheme scheme, String getter) {
-      try {
-        final dyn = scheme as dynamic;
-        final v =
-            dyn.__noSuchMethod__ == null ? null : null; // keep analyzer happy
-        return (dyn as dynamic)
-            .noSuchMethod; // never executed, trick to silence lints in try
-      } catch (_) {
-        // ignored
-      }
-      // Fallback path using mirrors is not available; we'll use a switch below.
-      return null;
-    }
-
-    // Read new fields via dynamic with try-catch (avoids hard SDK requirement)
-    Color _getOr(Color? c, Color Function() orElse) => c ?? orElse();
-
-    Color? _readColor(String name) {
-      try {
-        final dyn = s as dynamic;
-        return dyn.toJson != null ? null : (dyn as dynamic)[name] as Color?;
-      } catch (_) {
-        return null;
-      }
-    }
-
     // While dynamic lookup above is intentionally conservative, we can directly
     // access when fields exist in the current SDK, otherwise compute.
     Color surfaceDim = (() {

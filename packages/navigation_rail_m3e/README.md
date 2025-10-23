@@ -66,3 +66,64 @@ flutter run -d chrome
 ```
 
 _Last updated: 2025-10-23_
+
+
+---
+
+## Detailed Guide
+
+### What this package provides
+NavigationRailM3E with collapsed/expanded states, standard/modal presentation, badges, sections, and slots for FAB/menu. Integrates tightly with M3E tokens.
+
+### Installation
+- Monorepo (local path): already configured alongside m3e_design, fab_m3e, icon_button_m3e, button_m3e.
+- Pub (when published):
+```yaml
+dependencies:
+  navigation_rail_m3e: ^0.1.0
+  m3e_design: ^0.1.0
+  fab_m3e: ^0.1.0
+  icon_button_m3e: ^0.1.1
+  button_m3e: ^0.1.0
+```
+
+Minimum SDK: Dart >=3.0.0.
+
+### Dependencies
+- flutter
+- m3e_design, fab_m3e, icon_button_m3e, button_m3e
+
+### Quick start
+```dart
+NavigationRailM3E(
+  selectedIndex: 0,
+  onDestinationSelected: (i) {},
+  expanded: true,
+  modal: false,
+  leading: const FabM3E(icon: Icon(Icons.add)),
+  destinations: const [
+    NavigationRailDestinationM3E(icon: Icon(Icons.inbox), label: 'Inbox'),
+    NavigationRailDestinationM3E(icon: Icon(Icons.send), label: 'Sent'),
+  ],
+)
+```
+
+### Key parameters
+- expanded: bool — Expanded vs collapsed rail.
+- modal: bool — Modal overlay vs standard inline rail.
+- destinations: List<NavigationRailDestinationM3E> — Items to render.
+- selectedIndex: int; onDestinationSelected: ValueChanged<int> — Selection handling.
+- leading / trailing: Widget? — Header/footer area.
+- fab / menu slots: Widgets for actions and menus.
+- badgeBuilder / badgeCount: Optional per-item badges.
+
+### Theming with m3e_design
+Rail colors, indicator style, and typography adapt from M3ETheme.
+
+### Accessibility
+- Keyboard navigation, focus order, and semantics supported.
+
+### Links
+- Repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/navigation_rail_m3e
+- Issue tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
+- Changelog: ./CHANGELOG.md

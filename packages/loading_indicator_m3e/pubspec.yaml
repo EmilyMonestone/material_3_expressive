@@ -12,7 +12,6 @@ dependencies:
   flutter:
     sdk: flutter
   m3e_design:
-    path: ../m3e_design
   material_new_shapes: ^1.0.0
 
 dev_dependencies:

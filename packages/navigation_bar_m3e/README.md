@@ -93,3 +93,60 @@ flutter run -d chrome
 ```
 
 _Last updated: 2025-10-23_
+
+
+---
+
+## Detailed Guide
+
+### What this package provides
+NavigationBarM3E with M3E tokens for colors and shapes, badges, and adaptive layout behavior.
+
+### Installation
+- Monorepo (local path): already configured alongside m3e_design.
+- Pub (when published):
+```yaml
+dependencies:
+  navigation_bar_m3e: ^0.1.0
+  m3e_design: ^0.1.0
+```
+
+Minimum SDK: Dart >=3.5.0; Flutter >=3.22.0.
+
+### Dependencies
+- flutter
+- m3e_design
+
+### Quick start
+```dart
+int index = 0;
+
+NavigationBarM3E(
+  selectedIndex: index,
+  onDestinationSelected: (i) => setState(() => index = i),
+  destinations: const [
+    NavigationDestinationM3E(icon: Icon(Icons.home), label: 'Home'),
+    NavigationDestinationM3E(icon: Icon(Icons.search), label: 'Search'),
+    NavigationDestinationM3E(icon: Icon(Icons.person), label: 'Profile'),
+  ],
+)
+```
+
+### Key parameters
+- destinations: List<NavigationDestinationM3E> — Destinations to render.
+- selectedIndex: int — Current selection.
+- onDestinationSelected: ValueChanged<int> — Selection callback.
+- badgeBuilder / badgeCount: Optional badges per destination.
+- backgroundColor / indicatorColor: Color? — Override token-driven colors.
+- height / labelBehavior: Layout tweaks.
+
+### Theming with m3e_design
+Colors/shape/typography adapt from the active M3ETheme extension.
+
+### Accessibility
+- Labels visible or via semantics; badges have semantics descriptions.
+
+### Links
+- Repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/navigation_bar_m3e
+- Issue tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
+- Changelog: ./CHANGELOG.md

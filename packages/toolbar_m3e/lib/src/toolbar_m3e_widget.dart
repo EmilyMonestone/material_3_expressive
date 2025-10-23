@@ -13,9 +13,8 @@ class ToolbarM3EWidget extends StatelessWidget {
         color: m3e.colors.surfaceStrong,
         borderRadius: m3e.shapes.square.md,
       ),
-      child: Text('Toolbar placeholder', style: m3e.typography.base.titleMedium),
+      child:
+          Text('Toolbar placeholder', style: m3e.typography.base.titleMedium),
     );
   }
 }
-
-String _pascal(String s) => s.split('_').map((p) => p.isEmpty ? '' : (p[0].toUpperCase() + p.substring(1))).join();

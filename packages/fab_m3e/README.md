@@ -109,3 +109,73 @@ flutter run -d chrome
 ```
 
 _Last updated: 2025-10-23_
+
+
+---
+
+## Detailed Guide
+
+### What this package provides
+Material 3 Expressive Floating Action Buttons:
+- FabM3E (standard)
+- ExtendedFabM3E (icon + label)
+- FabMenuM3E (expandable menu of FAB actions)
+
+### Installation
+- Monorepo (local path): already configured alongside m3e_design.
+- Pub (when published):
+```yaml
+dependencies:
+  fab_m3e: ^0.1.0
+  m3e_design: ^0.1.0
+```
+
+Minimum SDK: Dart >=3.5.0; Flutter >=3.22.0.
+
+### Dependencies
+- flutter
+- m3e_design
+
+### Quick start
+```dart
+// Standard FAB
+FabM3E(
+  icon: const Icon(Icons.add),
+  onPressed: () {},
+)
+
+// Extended FAB
+ExtendedFabM3E(
+  icon: const Icon(Icons.add),
+  label: const Text('Add'),
+  onPressed: () {},
+)
+
+// FAB Menu (example)
+FabMenuM3E(
+  children: [
+    FabM3E(icon: const Icon(Icons.edit), onPressed: () {}),
+    FabM3E(icon: const Icon(Icons.share), onPressed: () {}),
+  ],
+)
+```
+
+### Key parameters
+- icon: Widget — Required for FabM3E and ExtendedFabM3E.
+- label: Widget? — Text label for ExtendedFabM3E.
+- onPressed: VoidCallback? — Action callback.
+- tooltip / semanticsLabel: String? — A11y hints.
+- shapeFamily: M3E shape family as exposed by tokens.
+- heroTag: Object? — For hero transitions.
+- mini: bool — Compact FAB sizing.
+
+### Theming with m3e_design
+Colors/elevation/shape are token-driven via M3ETheme.
+
+### Accessibility
+- 56dp standard, 40dp mini; high-contrast focus and pressed states.
+
+### Links
+- Repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/fab_m3e
+- Issue tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
+- Changelog: ./CHANGELOG.md

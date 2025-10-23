@@ -43,3 +43,41 @@ flutter run -d chrome
 ```
 
 _Last updated: 2025-10-23_
+
+
+---
+
+## Detailed Guide
+
+### What this package provides
+A convenience package that re-exports all Material 3 Expressive components and design tokens so you can depend on one package and import everything you need.
+
+### Installation
+- Monorepo (local path): already configured in this repo.
+- Pub (when published):
+```yaml
+dependencies:
+  m3e_collection: ^0.1.0
+```
+
+Minimum SDK: Dart >=3.5.0.
+
+### Dependencies (via this collection)
+- m3e_design, icon_button_m3e, split_button_m3e, button_group_m3e, app_bar_m3e, button_m3e, fab_m3e,
+  loading_indicator_m3e, progress_indicator_m3e, navigation_bar_m3e, navigation_rail_m3e, slider_m3e, toolbar_m3e.
+
+### Quick start
+```dart
+import 'package:m3e_collection/m3e_collection.dart';
+
+// Use any M3E widget, e.g. a filled button
+ButtonM3E.filled(label: const Text('Continue'), onPressed: () {})
+```
+
+### Notes
+- Keep versions of individual packages aligned; this collection pins compatible versions.
+
+### Links
+- Repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/m3e_collection
+- Issue tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
+- Changelog: ./CHANGELOG.md

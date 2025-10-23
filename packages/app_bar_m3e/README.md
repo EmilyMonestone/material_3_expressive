@@ -106,3 +106,84 @@ flutter run -d chrome
 ```
 
 _Last updated: 2025-10-23_
+
+
+---
+
+## Detailed Guide
+
+### What this package provides
+A family of Material 3 Expressive app bars:
+- AppBarM3E — small/standard bar for Scaffold.appBar.
+- SliverAppBarM3E — Medium and Large collapsing variants for CustomScrollView.
+
+All variants are powered by m3e_design tokens for consistent color, typography, and shape.
+
+### Installation
+- Monorepo (local path): already configured in this repo. Ensure packages/m3e_design exists.
+- Pub (when published): add to pubspec.yaml
+
+```yaml
+dependencies:
+  app_bar_m3e: ^0.1.0
+  m3e_design: ^0.1.0
+```
+
+Minimum SDK: Dart >=3.5.0; Flutter >=3.22.0.
+
+### Dependencies
+- flutter
+- m3e_design
+
+### Quick start
+```dart
+Scaffold(
+  appBar: const AppBarM3E(
+    titleText: 'Inbox',
+  ),
+  body: ...,
+);
+```
+
+Medium/Large collapsing:
+```dart
+CustomScrollView(
+  slivers: [
+    SliverAppBarM3E(
+      variant: AppBarM3EVariant.large, // or AppBarM3EVariant.medium
+      titleText: 'Gallery',
+      pinned: true,
+    ),
+    // content...
+  ],
+)
+```
+
+### Key parameters
+- titleText: String? — Text title when you don't pass a custom title widget.
+- title: Widget? — Custom title; overrides titleText.
+- leading: Widget? — Leading widget (e.g. Back button).
+- actions: List<Widget> — Trailing actions.
+- centerTitle: bool — Centers the title on platforms that prefer it.
+- backgroundColor / foregroundColor: Color? — Override token-driven colors.
+- density: AppBarM3EDensity — compact/regular.
+- shapeFamily: AppBarM3EShapeFamily — round or square corners.
+- variant (SliverAppBarM3E): medium or large.
+- pinned / floating / snap (Sliver): Standard sliver app bar behaviors.
+
+### Theming with m3e_design
+App bars read the M3ETheme extension from ThemeData. Example:
+```dart
+final base = ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal));
+final m3e = M3ETheme.defaults(base.colorScheme);
+final theme = base.copyWith(extensions: [m3e]);
+```
+
+### Accessibility
+- Meets 48×48 dp minimum hit target recommendations via tokens.
+- Proper contrast from token-driven color system.
+
+### Links
+- Repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/app_bar_m3e
+- Issue tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
+- Changelog: ./CHANGELOG.md

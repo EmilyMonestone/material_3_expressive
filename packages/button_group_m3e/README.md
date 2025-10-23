@@ -116,3 +116,58 @@ flutter run -d chrome
 ```
 
 _Last updated: 2025-10-23_
+
+
+---
+
+## Detailed Guide
+
+### What this package provides
+A layout-only ButtonGroupM3E that propagates size/shape to its child buttons and ensures consistent spacing and overflow behavior for Material 3 Expressive buttons.
+
+### Installation
+- Monorepo (local path): already configured alongside m3e_design and button_m3e.
+- Pub (when published):
+```yaml
+dependencies:
+  button_group_m3e: ^0.1.0
+  m3e_design: ^0.1.0
+  button_m3e: ^0.1.0
+```
+
+Minimum SDK: Dart >=3.5.0.
+
+### Dependencies
+- flutter
+- m3e_design
+
+### Quick start
+```dart
+ButtonGroupM3E(
+  size: ButtonM3ESize.md,
+  shapeFamily: ButtonM3EShapeFamily.round,
+  children: [
+    ButtonM3E.filled(onPressed: () {}, label: const Text('One')),
+    ButtonM3E.outlined(onPressed: () {}, label: const Text('Two')),
+    ButtonM3E.text(onPressed: () {}, label: const Text('Three')),
+  ],
+)
+```
+
+### Key parameters
+- children: List<Widget> — Typically ButtonM3E instances.
+- size: ButtonM3ESize — xs | sm | md | lg | xl. Propagated to children when possible.
+- shapeFamily: ButtonM3EShapeFamily — round | square.
+- spacing: double? — Horizontal/vertical gap between children.
+- direction / wrap: Axis or wrap behavior depending on implementation.
+
+### Theming with m3e_design
+Spacing/shape defaults are derived from M3ETheme tokens; you can override explicitly per group or per button.
+
+### Accessibility
+- Maintains minimum tap targets for grouped buttons and preserves focus order.
+
+### Links
+- Repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/button_group_m3e
+- Issue tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
+- Changelog: ./CHANGELOG.md

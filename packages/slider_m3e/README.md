@@ -85,3 +85,66 @@ flutter run -d chrome
 ```
 
 _Last updated: 2025-10-23_
+
+
+---
+
+## Detailed Guide
+
+### What this package provides
+SliderM3E and RangeSliderM3E that follow Material 3 Expressive tokens for colors, shapes, and density.
+
+### Installation
+- Monorepo (local path): already configured alongside m3e_design.
+- Pub (when published):
+```yaml
+dependencies:
+  slider_m3e: ^0.1.0
+  m3e_design: ^0.1.0
+```
+
+Minimum SDK: Dart >=3.5.0; Flutter >=3.22.0.
+
+### Dependencies
+- flutter
+- m3e_design
+
+### Quick start
+```dart
+// Single-value slider
+SliderM3E(
+  value: value,
+  onChanged: (v) => setState(() => value = v),
+  min: 0,
+  max: 100,
+  divisions: 10,
+  label: '$value',
+)
+
+// Range slider
+RangeSliderM3E(
+  values: range,
+  onChanged: (r) => setState(() => range = r),
+  min: 0,
+  max: 100,
+)
+```
+
+### Key parameters
+- value: double — Current slider value (SliderM3E).
+- values: RangeValues — Current range (RangeSliderM3E).
+- onChanged: ValueChanged<double/RangeValues> — Callback for value changes.
+- min / max / divisions: Configure value domain and discrete steps.
+- label: String? — Optional value label.
+- activeColor / inactiveColor / thumbColor: Color? overrides.
+
+### Theming with m3e_design
+Track shape, thickness, and colors follow M3E tokens; respects density.
+
+### Accessibility
+- Ensure sufficient contrast; provide semantics via labels when necessary.
+
+### Links
+- Repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/slider_m3e
+- Issue tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
+- Changelog: ./CHANGELOG.md

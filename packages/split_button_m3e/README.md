@@ -149,3 +149,59 @@ flutter run -d chrome
 ```
 
 _Last updated: 2025-10-23_
+
+
+---
+
+## Detailed Guide
+
+### What this package provides
+SplitButtonM3E: a two-part button with a primary action and a dropdown menu, with sizes, variants, shapes, and accessible minimum hit targets. Keyboard navigation supported.
+
+### Installation
+- Monorepo (local path): already configured alongside m3e_design.
+- Pub (when published):
+```yaml
+dependencies:
+  split_button_m3e: ^0.1.0
+  m3e_design: ^0.1.0
+```
+
+Minimum SDK: Dart >=3.9.2; Flutter >=1.17.0.
+
+### Dependencies
+- flutter
+- m3e_design
+
+### Quick start
+```dart
+SplitButtonM3E(
+  label: const Text('Share'),
+  primaryAction: () { /* do default share */ },
+  menuItems: const [
+    SplitButtonItemM3E(label: Text('Copy link'), value: 'copy'),
+    SplitButtonItemM3E(label: Text('Email'), value: 'email'),
+  ],
+  onSelected: (value) {
+    // handle from menu
+  },
+)
+```
+
+### Key parameters
+- label: Widget — Visible label next to the caret.
+- primaryAction: VoidCallback — Action when the main segment is tapped.
+- menuItems: List<SplitButtonItemM3E> — Menu options.
+- onSelected: ValueChanged<T> — Callback when a menu item is chosen.
+- variant/style: filled | tonal | elevated | outlined.
+- size: xs | sm | md | lg | xl.
+- shapeFamily: round | square.
+- isExpanded: bool — Whether to take full width when allowed.
+
+### Accessibility
+- Both segments meet 48×48dp minimum size; keyboard and screen reader friendly.
+
+### Links
+- Repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/split_button_m3e
+- Issue tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
+- Changelog: ./CHANGELOG.md

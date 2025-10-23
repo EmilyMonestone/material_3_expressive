@@ -11,7 +11,6 @@ dependencies:
   flutter:
     sdk: flutter
   m3e_design:
-    path: ../m3e_design
 
 dev_dependencies:
   flutter_test:

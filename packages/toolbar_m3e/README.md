@@ -94,3 +94,56 @@ flutter run -d chrome
 ```
 
 _Last updated: 2025-10-23_
+
+
+---
+
+## Detailed Guide
+
+### What this package provides
+ToolbarM3E with token-driven size, density, color, shape, and overflow handling (e.g., automatic menu when there isn’t enough space).
+
+### Installation
+- Monorepo (local path): already configured alongside m3e_design and button/icon packages.
+- Pub (when published):
+```yaml
+dependencies:
+  toolbar_m3e: ^0.1.0
+  m3e_design: ^0.1.0
+```
+
+Minimum SDK: Dart >=3.5.0; Flutter >=3.22.0.
+
+### Dependencies
+- flutter
+- m3e_design
+
+### Quick start
+```dart
+ToolbarM3E(
+  actions: [
+    ToolbarActionM3E(icon: Icons.copy, onPressed: () {}),
+    ToolbarActionM3E(icon: Icons.paste, onPressed: () {}),
+    ToolbarActionM3E(icon: Icons.delete_outline, onPressed: () {}),
+  ],
+  overflowBehavior: ToolbarOverflowBehaviorM3E.menu,
+)
+```
+
+### Key parameters
+- actions: List<ToolbarActionM3E> — Items shown on the toolbar.
+- overflowBehavior: menu | wrap | clip — How to handle overflow.
+- density: compact | regular — Affects height and spacing.
+- backgroundColor / foregroundColor: Color? overrides.
+- shapeFamily: round | square.
+
+### Theming with m3e_design
+Toolbar colors, shape, and spacing come from M3ETheme tokens; density adjusts measurements.
+
+### Accessibility
+- Buttons maintain 48×48dp minimum; provide tooltips/semantics for each action.
+
+### Links
+- Repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/toolbar_m3e
+- Issue tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
+- Changelog: ./CHANGELOG.md
