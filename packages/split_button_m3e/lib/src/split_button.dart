@@ -479,6 +479,16 @@ class _LeadingContent extends StatelessWidget {
     final iconBlock = size.leadingIconBlockWidth;
     final gap = size.gapIconToLabel;
 
+    // Scale label font-size with button size (xs/s unchanged).
+    final bfs = m3e.typography.buttonFontSize;
+    final double? labelFontSize = switch (size) {
+      SplitButtonM3ESize.xs => bfs.xs,
+      SplitButtonM3ESize.sm => bfs.sm,
+      SplitButtonM3ESize.md => bfs.md,
+      SplitButtonM3ESize.lg => bfs.lg,
+      SplitButtonM3ESize.xl => bfs.xl,
+    };
+
     Widget content;
     if (icon != null && (label?.isNotEmpty ?? false)) {
       content = Padding(
@@ -497,7 +507,10 @@ class _LeadingContent extends StatelessWidget {
               child: Text(
                 label!,
                 overflow: TextOverflow.ellipsis,
-                style: m3e.typography.base.labelLarge?.copyWith(color: color),
+                style: m3e.typography.base.labelLarge?.copyWith(
+                  color: color,
+                  fontSize: labelFontSize,
+                ),
               ),
             ),
           ],
@@ -519,7 +532,9 @@ class _LeadingContent extends StatelessWidget {
         child: Text(
           label ?? '',
           overflow: TextOverflow.ellipsis,
-          style: DefaultTextStyle.of(context).style.copyWith(color: color),
+          style: DefaultTextStyle.of(
+            context,
+          ).style.copyWith(color: color, fontSize: labelFontSize),
         ),
       );
     }

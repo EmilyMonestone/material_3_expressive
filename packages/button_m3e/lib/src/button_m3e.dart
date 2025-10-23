@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:m3e_design/m3e_design.dart';
 
 import 'button_tokens_adapter.dart';
 import 'enums.dart';
@@ -130,7 +131,21 @@ class _ButtonM3EState extends State<ButtonM3E> {
   }
 
   Widget _buildContent(ButtonMeasurements m) {
-    final text = DefaultTextStyle.merge(child: widget.label);
+    final m3e = context.m3e;
+    final bfs = m3e.typography.buttonFontSize;
+    final double? fontSize = switch (widget.size) {
+      ButtonM3ESize.xs => bfs.xs,
+      ButtonM3ESize.sm => bfs.sm,
+      ButtonM3ESize.md => bfs.md,
+      ButtonM3ESize.lg => bfs.lg,
+      ButtonM3ESize.xl => bfs.xl,
+    };
+
+    final text = DefaultTextStyle.merge(
+      style: fontSize == null ? null : TextStyle(fontSize: fontSize),
+      child: widget.label,
+    );
+
     if (widget.icon == null) return text;
     return Row(
       mainAxisSize: MainAxisSize.min,

@@ -128,3 +128,24 @@ class M3ETypography {
     );
   }
 }
+
+@immutable
+class ButtonFontSize {
+  final double xs;
+  final double sm;
+  final double md;
+  final double lg;
+  final double xl;
+
+  const ButtonFontSize({
+    this.xs = 14,
+    this.sm = 14,
+    this.md = 16,
+    this.lg = 20,
+    this.xl = 24,
+  });
+}
+
+extension M3EButtonFontSizeExt on M3ETypography {
+  ButtonFontSize get buttonFontSize => const ButtonFontSize();
+}
