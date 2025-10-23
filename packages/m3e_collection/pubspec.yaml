@@ -13,7 +13,7 @@ dependencies:
   material_new_shapes: ^1.0.0
   expressive_refresh: ^0.1.2
   m3e_design: ^0.1.0
-  icon_button_m3e: ^0.1.0
+  icon_button_m3e: ^0.2.0
   split_button_m3e: ^0.1.0
   button_group_m3e: ^0.1.0
   app_bar_m3e: ^0.1.0
