@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs
 
-library navigation_rail_m3e;
+library;
 
 export 'src/modality.dart';
 export 'src/navigation_rail_m3e_widget.dart';

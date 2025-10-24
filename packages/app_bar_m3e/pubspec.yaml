@@ -1,6 +1,6 @@
 name: app_bar_m3e
 description: Expressive App Bar (Material 3 Expressive) with small/medium/large variants and Sliver integration.
-version: 0.1.0
+version: 0.3.0
 repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/app_bar_m3e
 issue_tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
 

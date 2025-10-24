@@ -16,7 +16,7 @@ class NavigationRailM3E extends StatefulWidget {
   /// Creates a Material 3 Expressive navigation rail.
   const NavigationRailM3E({
     super.key,
-    required this.type,
+    this.type = NavigationRailM3EType.expanded,
     this.modality = NavigationRailM3EModality.standard,
     required this.sections,
     required this.selectedIndex,
@@ -27,9 +27,12 @@ class NavigationRailM3E extends StatefulWidget {
     this.onDismissModal,
     this.onTypeChanged,
     this.labelBehavior = NavigationRailM3ELabelBehavior.alwaysShow,
+    this.scrollable = true,
+    this.trailing,
+    this.trailingAtBottom = true,
   });
 
-  /// Presentation type for the rail (collapsed or expanded).
+  /// Presentation type for the rail (collapsed or expanded or alwaysCollapsed or alwaysExpanded).
   final NavigationRailM3EType type;
 
   /// How the rail is shown (standard or modal overlay).
@@ -62,6 +65,21 @@ class NavigationRailM3E extends StatefulWidget {
   /// Controls how labels are shown when the rail is expanded.
   final NavigationRailM3ELabelBehavior labelBehavior;
 
+  /// Whether the rail's main content area should be scrollable.
+  /// Defaults to true to match the current behavior.
+  final bool scrollable;
+
+  /// Optional trailing widget, always conceptually placed after the sections.
+  /// When [trailingAtBottom] is true, it's pinned to the bottom of the rail,
+  /// leaving flexible space between the sections and the trailing.
+  /// When false, it's inserted immediately after the sections within the content.
+  final Widget? trailing;
+
+  /// Controls where the trailing is placed relative to the rail's bottom.
+  /// If true, [trailing] is pinned to the bottom with space to the sections.
+  /// If false, [trailing] appears directly after the sections.
+  final bool trailingAtBottom;
+
   @override
   State<NavigationRailM3E> createState() => _NavigationRailM3EState();
 }
@@ -73,15 +91,37 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
   final LayerLink _anchor = LayerLink();
   bool _suppressInk = false;
 
-  bool get _isExpanded => widget.type == NavigationRailM3EType.expanded;
+  // Internal expanded/collapsed state. Initialized from widget.type and then
+  // controlled internally by the rail's menu button.
+  bool _expanded = false;
+
+  bool get _isExpanded => _expanded;
   bool get _isModal => widget.modality == NavigationRailM3EModality.modal;
   bool get _needsOverlay => _isModal && _isExpanded;
   bool get _needsCollapsedPeek =>
-      !_isExpanded && !_isModal && widget.hideWhenCollapsed;
+      !_isExpanded && !_isModal && widget.hideWhenCollapsed && _canToggle;
+
+  bool get _canToggle =>
+      widget.type == NavigationRailM3EType.collapsed ||
+      widget.type == NavigationRailM3EType.expanded;
+
+  NavigationRailM3EType get _notifiedType => _expanded
+      ? NavigationRailM3EType.expanded
+      : NavigationRailM3EType.collapsed;
 
   @override
   void initState() {
     super.initState();
+    // Initialize internal expanded state from the provided type.
+    // When toggleable (collapsed/expanded), mirror the provided type.
+    // When locked (alwaysCollapse/alwaysExpand), infer via enum name.
+    if (_canToggle) {
+      _expanded = widget.type == NavigationRailM3EType.expanded;
+    } else {
+      final name = widget.type.toString();
+      final isAlwaysCollapse = name.contains('alwaysCollapse');
+      _expanded = !isAlwaysCollapse; // alwaysExpand => true
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) => _syncOverlay());
   }
 
@@ -95,6 +135,27 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
       Future.delayed(const Duration(milliseconds: 320), () {
         if (mounted) setState(() => _suppressInk = false);
       });
+    }
+
+    // Keep internal state in sync with locking semantics of `always*` types.
+    final bool oldCanToggle =
+        oldWidget.type == NavigationRailM3EType.collapsed ||
+            oldWidget.type == NavigationRailM3EType.expanded;
+    final bool newCanToggle = _canToggle;
+
+    if (!newCanToggle) {
+      // Force the locked state.
+      final name = widget.type.toString();
+      final bool lockExpanded = !name.contains('alwaysCollapse');
+      if (_expanded != lockExpanded) {
+        setState(() => _expanded = lockExpanded);
+      }
+    } else if (!oldCanToggle && newCanToggle) {
+      // Transition from locked to toggleable: seed from the new default.
+      final bool startExpanded = widget.type == NavigationRailM3EType.expanded;
+      if (_expanded != startExpanded) {
+        setState(() => _expanded = startExpanded);
+      }
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _syncOverlay());
@@ -156,6 +217,19 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
     _collapsedPeekEntry = null;
   }
 
+  void _setExpanded(bool value) {
+    if (_expanded == value) return;
+    setState(() {
+      _expanded = value;
+      _suppressInk = true;
+    });
+    Future.delayed(const Duration(milliseconds: 320), () {
+      if (mounted) setState(() => _suppressInk = false);
+    });
+    // Notify listeners (if any) for backward compatibility.
+    widget.onTypeChanged?.call(_notifiedType);
+  }
+
   Widget _buildModalOverlay(BuildContext context) {
     return Stack(
       children: [
@@ -192,9 +266,7 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
     Widget btn = IconButtonM3E(
       icon: const Icon(Icons.menu),
       tooltip: 'Expand',
-      onPressed: widget.onTypeChanged == null
-          ? null
-          : () => widget.onTypeChanged!(NavigationRailM3EType.expanded),
+      onPressed: _canToggle ? () => _setExpanded(true) : null,
     );
     if (_suppressInk) {
       final t = Theme.of(context);
@@ -232,17 +304,13 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
 
   Widget _buildMenuButton(BuildContext context,
       {required Alignment alignment}) {
+    if (!_canToggle) return const SizedBox.shrink();
+
     final isExpanded = _isExpanded;
     Widget button = IconButtonM3E(
       icon: Icon(isExpanded ? Icons.menu_open : Icons.menu),
       tooltip: isExpanded ? 'Collapse' : 'Expand',
-      onPressed: widget.onTypeChanged == null
-          ? null
-          : () => widget.onTypeChanged!(
-                isExpanded
-                    ? NavigationRailM3EType.collapsed
-                    : NavigationRailM3EType.expanded,
-              ),
+      onPressed: () => _setExpanded(!isExpanded),
     );
 
     if (_suppressInk) {
@@ -298,6 +366,19 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
               elevation: 0,
               semanticLabel: fab.semanticLabel,
             ),
+    );
+  }
+
+  Widget? _buildTrailing(BuildContext context) {
+    final tr = widget.trailing;
+    if (tr == null) return null;
+    final isExpanded = _isExpanded;
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(start: 16, end: 16, bottom: 12),
+      child: Align(
+        alignment: isExpanded ? Alignment.centerLeft : Alignment.center,
+        child: tr,
+      ),
     );
   }
 
@@ -364,6 +445,11 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
         ));
       }
     }
+    // Place trailing after sections when not bottom-pinned.
+    if (widget.trailing != null && !widget.trailingAtBottom) {
+      final trailingWidget = _buildTrailing(context);
+      if (trailingWidget != null) children.add(trailingWidget);
+    }
     return children;
   }
 
@@ -378,10 +464,49 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
       child: LayoutBuilder(
         builder: (ctx, constraints) {
           final showLabels = _isExpanded && constraints.maxWidth >= 180;
-          return ListView(
-            padding: EdgeInsets.zero,
-            children: _buildChildren(ctx, showLabels: showLabels),
-          );
+          final children = _buildChildren(ctx, showLabels: showLabels);
+          final bottomTrailing =
+              (widget.trailing != null && widget.trailingAtBottom)
+                  ? _buildTrailing(ctx)
+                  : null;
+
+          if (widget.scrollable) {
+            if (bottomTrailing != null) {
+              return Column(
+                children: [
+                  Expanded(
+                    child: ListView(
+                      padding: EdgeInsets.zero,
+                      children: children,
+                    ),
+                  ),
+                  bottomTrailing,
+                ],
+              );
+            }
+            return ListView(
+              padding: EdgeInsets.zero,
+              children: children,
+            );
+          } else {
+            if (bottomTrailing != null) {
+              return Column(
+                children: [
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: children,
+                    ),
+                  ),
+                  bottomTrailing,
+                ],
+              );
+            }
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: children,
+            );
+          }
         },
       ),
     );

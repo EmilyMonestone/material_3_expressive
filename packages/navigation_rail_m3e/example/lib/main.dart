@@ -5,7 +5,9 @@ void main() {
   runApp(const DemoApp());
 }
 
+/// Simple demo application for NavigationRailM3E.
 class DemoApp extends StatefulWidget {
+  /// Creates the demo app widget.
   const DemoApp({super.key});
   @override
   State<DemoApp> createState() => _DemoAppState();

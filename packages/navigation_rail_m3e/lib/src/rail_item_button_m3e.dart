@@ -7,6 +7,7 @@ import 'package:navigation_rail_m3e/navigation_rail_m3e.dart';
 /// switching widget types. This avoids animation hitches when the
 /// rail animates between collapsed and expanded.
 class RailItemButtonM3E extends StatelessWidget {
+  /// Creates a [RailItemButtonM3E].
   const RailItemButtonM3E({
     super.key,
     required this.icon,
@@ -21,15 +22,34 @@ class RailItemButtonM3E extends StatelessWidget {
     this.badgeCount,
   });
 
+  /// Icon to display.
   final Widget icon;
+
+  /// Optional icon to display when [isSelected] is true; falls back to [icon].
   final Widget? selectedIcon;
+
+  /// Whether this destination is currently selected.
   final bool isSelected;
+
+  /// Callback when the button is tapped.
   final VoidCallback onPressed;
+
+  /// Whether the rail is in expanded layout.
   final bool expanded;
+
+  /// Controls when the text label is visible in collapsed mode.
   final NavigationRailM3ELabelBehavior labelBehavior;
+
+  /// Text label for the destination.
   final String label;
+
+  /// Semantic label used for accessibility (and tooltip when collapsed).
   final String? semanticLabel;
+
+  /// If true, suppresses Ink splash/hover effects.
   final bool suppressInk;
+
+  /// Optional numeric badge value to show.
   final int? badgeCount;
 
   @override

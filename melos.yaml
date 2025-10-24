@@ -11,6 +11,8 @@ scripts:
   bootstrap: melos bootstrap
   clean: melos exec -- flutter clean
   get: melos exec -- flutter pub get
+  upgrade: melos exec -- flutter pub upgrade
+  upgrade-major: melos exec -- flutter pub upgrade --major-versions
   format: melos exec -- dart format --set-exit-if-changed .
   analyze: melos exec -- dart analyze --fatal-infos --fatal-warnings
   test: melos exec -- flutter test --coverage
@@ -31,6 +33,3 @@ scripts:
       noPrivate: true
       dirExists:
         - lib
-  set-version:
-    run: dart run tool/update_versions.dart
-    description: "Set version for all packages (usage: melos run set-version -- version=1.2.3)"

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 /// Theme extension for NavigationRailM3E token values.
 class NavigationRailM3ETheme extends ThemeExtension<NavigationRailM3ETheme> {
+  /// Creates a [NavigationRailM3ETheme] with default token values.
   const NavigationRailM3ETheme({
     this.collapsedWidth = 96.0,
     this.expandedMinWidth = 220.0,
@@ -20,18 +21,43 @@ class NavigationRailM3ETheme extends ThemeExtension<NavigationRailM3ETheme> {
     this.sectionHeaderSpacingBottom = 8.0,
   });
 
+  /// Width of the rail when collapsed.
   final double collapsedWidth;
+
+  /// Minimum width of the rail when expanded.
   final double expandedMinWidth;
+
+  /// Maximum width of the rail when expanded.
   final double expandedMaxWidth;
+
+  /// Default height of an item.
   final double itemHeight;
+
+  /// Short item height variant.
   final double itemShortHeight;
+
+  /// Default icon size used for items.
   final double iconSize;
+
+  /// Leading inset for the active indicator in expanded mode.
   final double indicatorLeading;
+
+  /// Trailing inset for the active indicator in expanded mode.
   final double indicatorTrailing;
+
+  /// Gap between icon and label.
   final double iconLabelGap;
+
+  /// Vertical gap between items.
   final double itemVerticalGap;
+
+  /// Minimum spacing between the top and the first header.
   final double headerMinSpace;
+
+  /// Top spacing around a section header.
   final double sectionHeaderSpacingTop;
+
+  /// Bottom spacing around a section header.
   final double sectionHeaderSpacingBottom;
 
   @override

@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 /// Consumers provide values (icon, label, onPressed, etc.) instead of a widget.
 @immutable
 class NavigationRailM3EFabSlot {
+  /// Creates a [NavigationRailM3EFabSlot].
   const NavigationRailM3EFabSlot({
     required this.icon,
     required this.label,

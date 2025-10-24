@@ -8,9 +8,10 @@ void main(List<String> args) {
     (a) => a.startsWith('version='),
     orElse: () => 'version=',
   );
-  final version = versionArg.split('=', 2).last.trim();
+  final version = versionArg.split('=').last.trim();
   if (version.isEmpty) {
-    stderr.writeln('Usage: dart run tool/update_versions.dart -- version=<semver>');
+    stderr.writeln(
+        'Usage: dart run tool/update_versions.dart -- version=<semver>');
     exit(64);
   }
 
@@ -41,22 +42,28 @@ void main(List<String> args) {
     // Skip if it's clearly an app (heuristic): has 'flutter:' and 'uses-material-design:' at top-level
     // but the requirement is to update all packages under packages/*. We will proceed regardless.
 
-    final nameMatch = RegExp(r'^name:\s*(.+)$', multiLine: true).firstMatch(content);
-    final pkgName = nameMatch != null ? nameMatch.group(1)!.trim() : file.parent.path.split('\\').last;
+    final nameMatch =
+        RegExp(r'^name:\s*(.+)$', multiLine: true).firstMatch(content);
+    final pkgName = nameMatch != null
+        ? nameMatch.group(1)!.trim()
+        : file.parent.path.split('\\').last;
 
     String updatedContent;
     final versionRe = RegExp(r'^version:\s*.*$', multiLine: true);
     if (versionRe.hasMatch(content)) {
-      updatedContent = content.replaceFirstMapped(versionRe, (_) => 'version: $version');
+      updatedContent =
+          content.replaceFirstMapped(versionRe, (_) => 'version: $version');
     } else {
       // Insert after description if present, otherwise after name.
       final descRe = RegExp(r'^(description:.*)$', multiLine: true);
       if (descRe.hasMatch(content)) {
-        updatedContent = content.replaceFirstMapped(descRe, (m) => '${m.group(1)}\nversion: $version');
+        updatedContent = content.replaceFirstMapped(
+            descRe, (m) => '${m.group(1)}\nversion: $version');
       } else {
         final nameRe = RegExp(r'^(name:.*)$', multiLine: true);
         if (nameRe.hasMatch(content)) {
-          updatedContent = content.replaceFirstMapped(nameRe, (m) => '${m.group(1)}\nversion: $version');
+          updatedContent = content.replaceFirstMapped(
+              nameRe, (m) => '${m.group(1)}\nversion: $version');
         } else {
           // If neither present, prepend version at top.
           updatedContent = 'version: $version\n$content';
