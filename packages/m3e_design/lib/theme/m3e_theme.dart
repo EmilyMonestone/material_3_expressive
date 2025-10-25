@@ -97,3 +97,16 @@ class _M3ETypeProxy {
   TextStyle get headlineSmallEmphasized =>
       (_t.base.headlineSmall ?? _empty).merge(_t.emphasized.headline);
 }
+
+// Accessors for getting the M3E theme from ThemeData via Theme.of(context).m3e
+extension M3EThemeAccessors on ThemeData {
+  // Returns the installed M3ETheme; in release builds falls back to defaults
+  M3ETheme get m3e {
+    final e = extension<M3ETheme>();
+    assert(
+      e != null,
+      'M3ETheme is not installed on ThemeData. Wrap your app theme with withM3ETheme(...)',
+    );
+    return e ?? M3ETheme.defaults(colorScheme);
+  }
+}
