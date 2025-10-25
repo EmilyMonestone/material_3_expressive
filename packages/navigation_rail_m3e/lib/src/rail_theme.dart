@@ -9,8 +9,8 @@ class NavigationRailM3ETheme extends ThemeExtension<NavigationRailM3ETheme> {
     this.collapsedWidth = 96.0,
     this.expandedMinWidth = 220.0,
     this.expandedMaxWidth = 360.0,
-    this.itemHeight = 64.0,
-    this.itemShortHeight = 56.0,
+    this.itemExpandedHeight = 40.0,
+    this.itemCollapsedHeight = 56.0,
     this.iconSize = 24.0,
     this.indicatorLeading = 16.0,
     this.indicatorTrailing = 16.0,
@@ -31,10 +31,10 @@ class NavigationRailM3ETheme extends ThemeExtension<NavigationRailM3ETheme> {
   final double expandedMaxWidth;
 
   /// Default height of an item.
-  final double itemHeight;
+  final double itemExpandedHeight;
 
   /// Short item height variant.
-  final double itemShortHeight;
+  final double itemCollapsedHeight;
 
   /// Default icon size used for items.
   final double iconSize;
@@ -80,8 +80,8 @@ class NavigationRailM3ETheme extends ThemeExtension<NavigationRailM3ETheme> {
       collapsedWidth: collapsedWidth ?? this.collapsedWidth,
       expandedMinWidth: expandedMinWidth ?? this.expandedMinWidth,
       expandedMaxWidth: expandedMaxWidth ?? this.expandedMaxWidth,
-      itemHeight: itemHeight ?? this.itemHeight,
-      itemShortHeight: itemShortHeight ?? this.itemShortHeight,
+      itemExpandedHeight: itemHeight ?? this.itemExpandedHeight,
+      itemCollapsedHeight: itemShortHeight ?? this.itemCollapsedHeight,
       iconSize: iconSize ?? this.iconSize,
       indicatorLeading: indicatorLeading ?? this.indicatorLeading,
       indicatorTrailing: indicatorTrailing ?? this.indicatorTrailing,
@@ -105,8 +105,10 @@ class NavigationRailM3ETheme extends ThemeExtension<NavigationRailM3ETheme> {
           lerpDouble(expandedMinWidth, other.expandedMinWidth, t)!,
       expandedMaxWidth:
           lerpDouble(expandedMaxWidth, other.expandedMaxWidth, t)!,
-      itemHeight: lerpDouble(itemHeight, other.itemHeight, t)!,
-      itemShortHeight: lerpDouble(itemShortHeight, other.itemShortHeight, t)!,
+      itemExpandedHeight:
+          lerpDouble(itemExpandedHeight, other.itemExpandedHeight, t)!,
+      itemCollapsedHeight:
+          lerpDouble(itemCollapsedHeight, other.itemCollapsedHeight, t)!,
       iconSize: lerpDouble(iconSize, other.iconSize, t)!,
       indicatorLeading:
           lerpDouble(indicatorLeading, other.indicatorLeading, t)!,

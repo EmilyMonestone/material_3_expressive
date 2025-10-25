@@ -58,7 +58,8 @@ class RailItemButtonM3E extends StatelessWidget {
         const NavigationRailM3ETheme();
     final tokens = NavigationRailTokensAdapter(context);
 
-    final double height = expanded ? theme.itemHeight : theme.itemHeight;
+    final double height =
+        expanded ? theme.itemCollapsedHeight : theme.itemCollapsedHeight;
     final bool selected = isSelected;
 
     // Colors and shape per state.
