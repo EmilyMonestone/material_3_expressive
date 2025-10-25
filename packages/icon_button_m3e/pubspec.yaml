@@ -1,6 +1,6 @@
 name: icon_button_m3e
 description: "Material 3 Expressive IconButton with sizes, variants, shapes, toggle, and accessible hit targets."
-version: 0.3.0
+version: 0.2.1
 repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/icon_button_m3e
 issue_tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
 
@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  m3e_design: ^0.1.0
+  m3e_design: ^0.2.1
 
 dev_dependencies:
   flutter_lints: ^6.0.0

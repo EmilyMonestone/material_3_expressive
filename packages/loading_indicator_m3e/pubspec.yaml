@@ -1,6 +1,6 @@
 name: loading_indicator_m3e
 description: Material 3 Expressive Loading Indicator (morphing polygons) for Flutter, with Default and Contained variants.
-version: 0.3.0
+version: 0.1.1
 repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/loading_indicator_m3e
 issue_tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
 
@@ -11,9 +11,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  m3e_design: ^0.1.0
+  m3e_design: ^0.2.0
   material_new_shapes: ^1.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  widgetbook: ^3.18.0
+  widgetbook_annotation: ^3.7.0
