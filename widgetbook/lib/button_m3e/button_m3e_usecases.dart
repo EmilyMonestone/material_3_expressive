@@ -118,7 +118,7 @@ Widget _buildDemo(
 }
 
 @UseCase(name: 'default', type: ButtonM3E)
-Widget buildButtonM3EUseCase(BuildContext context) {
+Widget buildButtonM3EDefaultUseCase(BuildContext context) {
   // Default uses filled style; other params adjustable with knobs
   return _buildDemo(context, style: ButtonM3EStyle.filled);
 }

@@ -1,9 +1,7 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:toolbar_m3e/toolbar_m3e.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
-import 'package:toolbar_m3e/toolbar_m3e.dart';
 
 @UseCase(name: 'default', type: ToolbarIconButtonM3E)
 Widget buildToolbarIconButtonM3EDefaultUseCase(BuildContext context) {
@@ -51,7 +49,8 @@ Widget buildToolbarIconButtonM3EDestructiveUseCase(BuildContext context) {
 }
 
 @UseCase(name: 'custom_color_and_size', type: ToolbarIconButtonM3E)
-Widget buildToolbarIconButtonM3ECustomStyleUseCase(BuildContext context) {
+Widget buildToolbarIconButtonM3ECustomColorAndSizeUseCase(
+    BuildContext context) {
   final color = context.knobs.color(label: 'color', initialValue: Colors.teal);
   final iconSize = context.knobs.double.slider(
     label: 'iconSize',

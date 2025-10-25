@@ -12,7 +12,7 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 // - Complex objects get meaningful defaults with TODOs.
 
 @UseCase(name: 'default', type: IconButtonM3E)
-Widget buildIconButtonM3EUseCase(BuildContext context) {
+Widget buildIconButtonM3EDefaultUseCase(BuildContext context) {
   final bool isToggle = context.knobs.boolean(
     label: 'is toggle (provides selected state)',
     initialValue: true,

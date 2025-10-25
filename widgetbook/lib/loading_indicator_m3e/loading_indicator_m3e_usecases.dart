@@ -53,7 +53,7 @@ List<RoundedPolygon> _polygonSet(String id) {
 }
 
 @UseCase(name: 'default', type: LoadingIndicatorM3E)
-Widget buildLoadingIndicatorM3EUseCase(BuildContext context) {
+Widget buildLoadingIndicatorM3EDefaultUseCase(BuildContext context) {
   // Keep defaults: tokens-based sizing and colors, subtle container.
   return const Center(
     child: LoadingIndicatorM3E(),

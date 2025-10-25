@@ -78,7 +78,7 @@ Widget _buildFab(
 }
 
 @widgetbook.UseCase(name: 'default', type: FabM3E)
-Widget buildFabM3EUseCase(BuildContext context) {
+Widget buildFabM3EDefaultUseCase(BuildContext context) {
   return _buildFab(context, kind: FabM3EKind.primary);
 }
 

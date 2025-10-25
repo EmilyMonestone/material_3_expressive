@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:loading_indicator_m3e/loading_indicator_m3e.dart';
 import 'package:material_new_shapes/material_new_shapes.dart';
@@ -23,9 +21,17 @@ List<RoundedPolygon> _polygonSet(String id) {
     case 'cookie→oval':
       return [MaterialShapes.cookie9Sided, MaterialShapes.oval];
     case 'softBurst→pill→sunny':
-      return [MaterialShapes.softBurst, MaterialShapes.pill, MaterialShapes.sunny];
+      return [
+        MaterialShapes.softBurst,
+        MaterialShapes.pill,
+        MaterialShapes.sunny
+      ];
     case 'triangle→square→pentagon':
-      return [MaterialShapes.triangle, MaterialShapes.square, MaterialShapes.pentagon];
+      return [
+        MaterialShapes.triangle,
+        MaterialShapes.square,
+        MaterialShapes.pentagon
+      ];
     default:
       return [
         MaterialShapes.softBurst,
@@ -120,7 +126,9 @@ Widget buildExpressiveLoadingIndicatorColorAndSemanticsUseCase(
   );
 }
 
-@UseCase(name: 'edge: invalid polygons (debug assert)', type: ExpressiveLoadingIndicator)
+@UseCase(
+    name: 'edge: invalid polygons (debug assert)',
+    type: ExpressiveLoadingIndicator)
 Widget buildExpressiveLoadingIndicatorInvalidPolygonsUseCase(
     BuildContext context) {
   final enableInvalid = context.knobs.boolean(

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:navigation_rail_m3e/navigation_rail_m3e.dart';
 import 'package:widgetbook/widgetbook.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart' as widgetbook;
-import 'package:navigation_rail_m3e/navigation_rail_m3e.dart';
 
 // Note: RailBadgeM3E shows nothing when count is null; dot when 0; count otherwise.
 
 @widgetbook.UseCase(name: 'default', type: RailBadgeM3E)
-Widget buildRailBadgeM3EUseCase(BuildContext context) {
+Widget buildRailBadgeM3EDefaultUseCase(BuildContext context) {
   final count = context.knobs.intOrNull.slider(
     label: 'count',
     initialValue: 7,

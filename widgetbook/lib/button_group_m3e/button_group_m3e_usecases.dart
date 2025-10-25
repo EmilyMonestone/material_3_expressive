@@ -132,7 +132,7 @@ Clip _knobClipBehavior(BuildContext context, {Clip initial = Clip.none}) =>
     );
 
 @UseCase(name: 'default', type: ButtonGroupM3E)
-Widget buildButtonGroupM3EUseCase(BuildContext context) {
+Widget buildButtonGroupM3EDefaultUseCase(BuildContext context) {
   final ButtonGroupM3EType type = _knobType(context);
   final ButtonGroupM3EShape shape = _knobShape(context);
   final ButtonGroupM3ESize size = _knobSize(context);
