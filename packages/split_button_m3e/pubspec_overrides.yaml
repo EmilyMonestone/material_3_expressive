@@ -1,0 +1,4 @@
+# melos_managed_dependency_overrides: m3e_design
+dependency_overrides:
+  m3e_design:
+    path: ..\\m3e_design

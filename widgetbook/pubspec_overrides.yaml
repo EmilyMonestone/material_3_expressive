@@ -1,0 +1,30 @@
+# melos_managed_dependency_overrides: app_bar_m3e,button_group_m3e,button_m3e,fab_m3e,icon_button_m3e,loading_indicator_m3e,m3e_collection,m3e_design,navigation_bar_m3e,navigation_rail_m3e,progress_indicator_m3e,slider_m3e,split_button_m3e,toolbar_m3e
+dependency_overrides:
+  app_bar_m3e:
+    path: ..\\packages\\app_bar_m3e
+  button_group_m3e:
+    path: ..\\packages\\button_group_m3e
+  button_m3e:
+    path: ..\\packages\\button_m3e
+  fab_m3e:
+    path: ..\\packages\\fab_m3e
+  icon_button_m3e:
+    path: ..\\packages\\icon_button_m3e
+  loading_indicator_m3e:
+    path: ..\\packages\\loading_indicator_m3e
+  m3e_collection:
+    path: ..\\packages\\m3e_collection
+  m3e_design:
+    path: ..\\packages\\m3e_design
+  navigation_bar_m3e:
+    path: ..\\packages\\navigation_bar_m3e
+  navigation_rail_m3e:
+    path: ..\\packages\\navigation_rail_m3e
+  progress_indicator_m3e:
+    path: ..\\packages\\progress_indicator_m3e
+  slider_m3e:
+    path: ..\\packages\\slider_m3e
+  split_button_m3e:
+    path: ..\\packages\\split_button_m3e
+  toolbar_m3e:
+    path: ..\\packages\\toolbar_m3e

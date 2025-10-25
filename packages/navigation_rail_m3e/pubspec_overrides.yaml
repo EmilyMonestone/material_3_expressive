@@ -1,0 +1,10 @@
+# melos_managed_dependency_overrides: button_m3e,fab_m3e,icon_button_m3e,m3e_design
+dependency_overrides:
+  button_m3e:
+    path: ..\\button_m3e
+  fab_m3e:
+    path: ..\\fab_m3e
+  icon_button_m3e:
+    path: ..\\icon_button_m3e
+  m3e_design:
+    path: ..\\m3e_design
