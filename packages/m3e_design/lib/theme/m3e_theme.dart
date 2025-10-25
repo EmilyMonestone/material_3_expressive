@@ -110,3 +110,21 @@ extension M3EThemeAccessors on ThemeData {
     return e ?? M3ETheme.defaults(colorScheme);
   }
 }
+
+// Convenience creation helpers to install M3ETheme with minimal boilerplate.
+extension M3EColorSchemeAccessors on ColorScheme {
+  /// Creates a ThemeData from this ColorScheme and installs the M3ETheme
+  /// extension in one call.
+  ///
+  /// Example:
+  ///   final theme = ColorScheme.fromSeed(seedColor: Colors.teal).toM3EThemeData();
+  ThemeData toM3EThemeData({
+    bool useMaterial3 = true,
+    M3ETheme? override,
+    ThemeData? base,
+  }) {
+    final ThemeData seed =
+        base ?? ThemeData(useMaterial3: useMaterial3, colorScheme: this);
+    return withM3ETheme(seed, override: override);
+  }
+}

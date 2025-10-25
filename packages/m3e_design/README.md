@@ -19,7 +19,7 @@ cd apps/gallery
 flutter run -d chrome
 ```
 
-_Last updated: 2025-10-23_
+_Last updated: 2025-10-25_
 
 
 ---
@@ -40,27 +40,73 @@ dependencies:
 
 Minimum SDK: Dart >=3.5.0.
 
-### Quick start: add M3ETheme to ThemeData
+### Quick start: one-liner theme
 ```dart
-final base = ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal));
-final m3e = M3ETheme.defaults(base.colorScheme);
-
-return MaterialApp(
-  theme: base.copyWith(extensions: [m3e]),
-  home: const MyHomePage(),
-);
+Widget buildApp() {
+  return MaterialApp(
+    theme: ColorScheme.fromSeed(seedColor: Colors.teal).toM3EThemeData(),
+    home: const MyHomePage(),
+  );
+}
 ```
 
-With dynamic color (Android 12+):
+With dynamic color (Android 12+), setting both light and dark themes:
 ```dart
-DynamicColorBuilder(
-  builder: (lightDynamic, darkDynamic) {
-    final scheme = lightDynamic ?? ColorScheme.fromSeed(seedColor: Colors.teal);
-    final base = ThemeData(colorScheme: scheme);
-    final m3e = M3ETheme.defaults(base.colorScheme);
-    return MaterialApp(theme: base.copyWith(extensions: [m3e]), home: const MyHomePage());
-  },
-)
+Widget buildDynamicApp() {
+  return DynamicColorBuilder(
+    builder: (lightDynamic, darkDynamic) {
+      final light = lightDynamic ?? ColorScheme.fromSeed(seedColor: Colors.teal);
+      final dark = darkDynamic ??
+          ColorScheme.fromSeed(seedColor: Colors.teal, brightness: Brightness.dark);
+      return MaterialApp(
+        theme: light.toM3EThemeData(),
+        darkTheme: dark.toM3EThemeData(),
+        home: const MyHomePage(),
+      );
+    },
+  );
+}
+```
+
+### Alternative approach: withM3ETheme
+The alternative approach is to use the withM3ETheme ThemeExtension, which is a convenience wrapper around the ThemeData constructor.
+``` dart
+Widget build(BuildContext context) {
+  return MaterialApp(
+    theme: withM3ETheme(
+      ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+        useMaterial3: true,
+      ),
+    ),
+    home: const MyHomePage(),
+    );
+}
+```
+
+``` dart
+Widget build(BuildContext context) {
+      child: DynamicColorBuilder(
+        builder: (lightDynamic, darkDynamic) {
+          return MaterialApp(
+            theme: withM3ETheme(
+              ThemeData(
+                colorScheme: lightDynamic ?? App._defaultLightColorScheme,
+                useMaterial3: true,
+              ),
+            ),
+            darkTheme: withM3ETheme(
+              ThemeData(
+                colorScheme: darkDynamic ?? App._defaultDarkColorScheme,
+                useMaterial3: true,
+                brightness: Brightness.dark,
+              ),
+            ),
+            home: const MyHomePage(),
+          );
+        },
+      ),
+    }   
 ```
 
 ### Token overview
