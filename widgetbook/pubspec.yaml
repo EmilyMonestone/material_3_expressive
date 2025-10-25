@@ -1,0 +1,38 @@
+name: widgetbook_workspace
+description: Widgetbook workspace for the material_3_expressive monorepo.
+publish_to: none
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  button_group_m3e:
+    path: ../packages/button_group_m3e
+  flutter:
+    sdk: flutter
+  loading_indicator_m3e:
+    path: ../packages/loading_indicator_m3e
+  m3e_collection:
+    path: ../packages/m3e_collection
+  material_new_shapes: ^1.0.0
+  navigation_bar_m3e:
+    path: ../packages/navigation_bar_m3e
+  navigation_rail_m3e:
+    path: ../packages/navigation_rail_m3e
+  progress_indicator_m3e:
+    path: ../packages/progress_indicator_m3e
+  split_button_m3e:
+    path: ../packages/split_button_m3e
+  widgetbook: ^3.18.0
+  widgetbook_annotation: ^3.7.0
+  app_bar_m3e:
+    path: ../packages/app_bar_m3e
+  fab_m3e:
+    path: ../packages/fab_m3e
+
+dev_dependencies:
+  build_runner: ^2.4.13
+  widgetbook_generator: ^3.18.0
+
+flutter:
+  uses-material-design: true

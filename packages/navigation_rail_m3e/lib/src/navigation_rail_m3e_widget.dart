@@ -415,8 +415,12 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
         for (final dest in section.destinations) {
           final index = _destinationIndex(widget.sections, dest);
           children.add(Padding(
-            padding: const EdgeInsetsDirectional.only(
-                start: 16, end: 16, top: 8.0, bottom: 8.0),
+            padding: EdgeInsetsDirectional.only(
+              start: 16,
+              end: 16,
+              top: theme.itemVerticalGap,
+              bottom: theme.itemVerticalGap,
+            ),
             child: RailItem(
               destination: dest,
               selected: index == widget.selectedIndex,
