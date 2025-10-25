@@ -2,6 +2,7 @@ name: m3e
 packages:
   - "packages/*"
   - "apps/*"
+  - "widgetbook/"
 
 command:
   bootstrap:

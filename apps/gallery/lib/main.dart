@@ -31,20 +31,14 @@ class _GalleryAppState extends State<GalleryApp> {
 
   @override
   Widget build(BuildContext context) {
-    final baseLight = ThemeData(
-      useMaterial3: true,
-      colorSchemeSeed: Colors.purple,
-      brightness: Brightness.light,
-    );
-    final baseDark = ThemeData(
-      useMaterial3: true,
-      colorSchemeSeed: Colors.purple,
-      brightness: Brightness.dark,
-    );
+    final light = ColorScheme.fromSeed(
+        seedColor: Colors.purple, brightness: Brightness.light);
+    final dark = ColorScheme.fromSeed(
+        seedColor: Colors.purple, brightness: Brightness.dark);
     return MaterialApp(
       title: 'M3E Gallery',
-      theme: withM3ETheme(baseLight),
-      darkTheme: withM3ETheme(baseDark),
+      theme: light.toM3EThemeData(),
+      darkTheme: dark.toM3EThemeData(),
       themeMode: _mode,
       home: GalleryHome(
         isDark: _mode == ThemeMode.dark,
@@ -56,7 +50,8 @@ class _GalleryAppState extends State<GalleryApp> {
 }
 
 class GalleryHome extends StatefulWidget {
-  const GalleryHome({super.key, required this.isDark, required this.onToggleBrightness});
+  const GalleryHome(
+      {super.key, required this.isDark, required this.onToggleBrightness});
 
   final bool isDark;
   final VoidCallback onToggleBrightness;
@@ -77,7 +72,8 @@ class _GalleryHomeState extends State<GalleryHome> {
         titleText: 'M3E Gallery',
         actions: [
           IconButton(
-            tooltip: widget.isDark ? 'Switch to light mode' : 'Switch to dark mode',
+            tooltip:
+                widget.isDark ? 'Switch to light mode' : 'Switch to dark mode',
             onPressed: widget.onToggleBrightness,
             icon: Icon(widget.isDark ? Icons.dark_mode : Icons.light_mode),
           ),
