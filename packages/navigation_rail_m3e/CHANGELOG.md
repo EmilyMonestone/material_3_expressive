@@ -1,3 +1,6 @@
+## 0.3.5
+- fix bug with collapsed mode
+
 ## 0.3.4
 - add optional background parameter to NavigationRailM3E
 

@@ -1,6 +1,6 @@
 name: navigation_rail_m3e
 description: Material 3 Expressive navigation rail (collapsed & expanded) with modal/standard modes, badges, sections, and m3e_design token integration.
-version: 0.3.4
+version: 0.3.5
 homepage: https://github.com/EmilyMonestone/material_3_expressive
 repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/navigation_rail_m3e
 issue_tracker: https://github.com/EmilyMonestone/material_3_expressive/issues

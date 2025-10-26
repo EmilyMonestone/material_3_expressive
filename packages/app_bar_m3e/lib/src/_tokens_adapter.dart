@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:m3e_design/m3e_design.dart';
+
 import 'app_bar_m3e_enums.dart';
 
 @immutable
@@ -24,7 +25,8 @@ class _AppBarMetrics {
 
 _AppBarMetrics metricsFor(BuildContext context, AppBarM3EDensity density) {
   final theme = Theme.of(context);
-  final m3e = theme.extension<M3ETheme>() ?? M3ETheme.defaults(theme.colorScheme);
+  final m3e =
+      theme.extension<M3ETheme>() ?? M3ETheme.defaults(theme.colorScheme);
   final sp = m3e.spacing;
 
   // Heights (approx per M3 specs; can be tuned via Theme extension in m3e_design if desired)
@@ -54,21 +56,26 @@ _AppBarMetrics metricsFor(BuildContext context, AppBarM3EDensity density) {
 
 Color backgroundFor(BuildContext context) {
   final theme = Theme.of(context);
-  final m3e = theme.extension<M3ETheme>() ?? M3ETheme.defaults(theme.colorScheme);
+  final m3e =
+      theme.extension<M3ETheme>() ?? M3ETheme.defaults(theme.colorScheme);
   // Prefer container surfaces for bars
   return m3e.colors.surfaceContainerHigh;
 }
 
 TextStyle titleStyleFor(BuildContext context, {bool collapsed = true}) {
   final theme = Theme.of(context);
-  final m3e = theme.extension<M3ETheme>() ?? M3ETheme.defaults(theme.colorScheme);
+  final m3e =
+      theme.extension<M3ETheme>() ?? M3ETheme.defaults(theme.colorScheme);
   return collapsed ? m3e.type.titleLarge : m3e.type.headlineSmallEmphasized;
 }
 
 ShapeBorder shapeFor(BuildContext context, AppBarM3EShapeFamily family) {
   final theme = Theme.of(context);
-  final m3e = theme.extension<M3ETheme>() ?? M3ETheme.defaults(theme.colorScheme);
-  final set = family == AppBarM3EShapeFamily.round ? m3e.shapes.round : m3e.shapes.square;
+  final m3e =
+      theme.extension<M3ETheme>() ?? M3ETheme.defaults(theme.colorScheme);
+  final set = family == AppBarM3EShapeFamily.round
+      ? m3e.shapes.round
+      : m3e.shapes.square;
   // Use medium size radius for the bar container by default
-  return RoundedRectangleBorder(borderRadius: set.md);
+  return RoundedRectangleBorder(borderRadius: set.sm);
 }

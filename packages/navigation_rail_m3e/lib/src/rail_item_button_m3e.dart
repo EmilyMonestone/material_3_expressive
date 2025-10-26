@@ -20,6 +20,7 @@ class RailItemButtonM3E extends StatelessWidget {
     this.semanticLabel,
     this.suppressInk = false,
     this.badgeCount,
+    this.heightOverride,
   });
 
   /// Icon to display.
@@ -52,16 +53,22 @@ class RailItemButtonM3E extends StatelessWidget {
   /// Optional numeric badge value to show.
   final int? badgeCount;
 
+  /// Optional min height to enforce for the tap target. When null, defaults
+  /// to the theme's [NavigationRailM3ETheme.itemExpandedHeight] or
+  /// [itemCollapsedHeight] depending on [expanded].
+  final double? heightOverride;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).extension<NavigationRailM3ETheme>() ??
         const NavigationRailM3ETheme();
     final tokens = NavigationRailTokensAdapter(context);
 
-    final double height =
-        expanded ? theme.itemCollapsedHeight : theme.itemCollapsedHeight;
-    final bool selected = isSelected;
+    final double defaultHeight =
+        expanded ? theme.itemExpandedHeight : theme.itemCollapsedHeight;
+    final double height = heightOverride ?? defaultHeight;
 
+    final bool selected = isSelected;
     // Colors and shape per state.
     final Color fg =
         selected ? tokens.activeIconAndLabel : tokens.inactiveIconAndLabel;
@@ -76,8 +83,10 @@ class RailItemButtonM3E extends StatelessWidget {
 
     Widget content;
     if (expanded) {
-      final textExpended = Flexible(
+      final textExpanded = Flexible(
         child: DefaultTextStyle.merge(
+          // Use a readable style in expanded mode.
+          style: Theme.of(context).textTheme.labelLarge!,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           child: Text(label, semanticsLabel: semanticLabel ?? label),
@@ -95,7 +104,7 @@ class RailItemButtonM3E extends StatelessWidget {
                   child: effectiveIcon,
                 ),
                 SizedBox(width: theme.iconLabelGap),
-                textExpended,
+                textExpanded,
               ],
             ),
           ),
@@ -138,15 +147,17 @@ class RailItemButtonM3E extends StatelessWidget {
       );
     }
 
+    // Material/Ink wrapper. Respect [suppressInk] to avoid flicker during transitions.
+    final bool noInk = suppressInk || !expanded;
     final Material material = Material(
       color: bg,
       shape: shape,
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onPressed,
-        splashFactory: expanded ? null : NoSplash.splashFactory,
-        hoverColor: expanded ? null : Colors.transparent,
-        highlightColor: expanded ? null : Colors.transparent,
+        splashFactory: noInk ? NoSplash.splashFactory : null,
+        hoverColor: noInk ? Colors.transparent : null,
+        highlightColor: noInk ? Colors.transparent : null,
         child: Padding(
           // Horizontal padding similar to ButtonM3E sm; for collapsed, none.
           padding: expanded
