@@ -15,8 +15,7 @@ class NavigationRailTokensAdapter {
   /// Background color of the rail container.
   Color get containerColor {
     // Use surface container token if present, else fallback.
-    return _maybe(() => context.m3e.colors.surfaceContainer) ??
-        _cs.surfaceContainer;
+    return _maybe(() => context.m3e.colors.surface) ?? _cs.surface;
   }
 
   /// Background color of the active item indicator.

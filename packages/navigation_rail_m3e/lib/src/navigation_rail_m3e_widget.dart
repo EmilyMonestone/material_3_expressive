@@ -30,6 +30,7 @@ class NavigationRailM3E extends StatefulWidget {
     this.scrollable = true,
     this.trailing,
     this.trailingAtBottom = true,
+    this.background,
   });
 
   /// Presentation type for the rail (collapsed or expanded or alwaysCollapsed or alwaysExpanded).
@@ -79,6 +80,10 @@ class NavigationRailM3E extends StatefulWidget {
   /// If true, [trailing] is pinned to the bottom with space to the sections.
   /// If false, [trailing] appears directly after the sections.
   final bool trailingAtBottom;
+
+  /// Optional background color for the rail. If null, falls back to
+  /// [NavigationRailTokensAdapter.containerColor] from the current theme.
+  final Color? background;
 
   @override
   State<NavigationRailM3E> createState() => _NavigationRailM3EState();
@@ -464,7 +469,8 @@ class _NavigationRailM3EState extends State<NavigationRailM3E>
       duration: const Duration(milliseconds: 280),
       curve: Curves.easeOutCubic,
       width: width,
-      decoration: BoxDecoration(color: tokens.containerColor),
+      decoration:
+          BoxDecoration(color: widget.background ?? tokens.containerColor),
       child: LayoutBuilder(
         builder: (ctx, constraints) {
           final showLabels = _isExpanded && constraints.maxWidth >= 180;
