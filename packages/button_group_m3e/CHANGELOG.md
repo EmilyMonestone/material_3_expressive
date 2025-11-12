@@ -1,3 +1,8 @@
+## 0.3.1
+- New: `expanded` and `linearMainAxisAlignment` options for non-wrap layouts. When `expanded` is true, the group uses `MainAxisSize.max` and aligns items per `linearMainAxisAlignment` (or mapped from `alignment`). This enables internal center/right alignment without extra wrappers.
+- Fix: Connected + menu overflow now consistently inserts a 2px gap before the overflow trigger (when `showDividers=false`) and uses a stricter width-fitting algorithm with a small epsilon to eliminate minor RenderFlex overflows.
+- UX: Dropdown overflow popup is anchored bottom-right of the overflow button, has intrinsic width to fit its buttons, and aligns its internal buttons to the right.
+
 ## 0.3.0
 - Breaking: Removed legacy `children` parameter. Use `actions: List<ButtonGroupM3EAction>` instead.
 - Breaking: Renamed `groupSelection` API to `selection` for clarity.

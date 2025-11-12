@@ -39,6 +39,14 @@ class ButtonGroupSection extends StatelessWidget {
           title: 'ButtonGroupM3E — vertical, menu overflow',
           child: _demoVertical(context),
         ),
+        SectionCard(
+          title: 'ButtonGroupM3E — centered (expanded)',
+          child: _demoAlignedCenter(context),
+        ),
+        SectionCard(
+          title: 'ButtonGroupM3E — right aligned (expanded)',
+          child: _demoAlignedRight(context),
+        ),
       ],
     );
   }
@@ -48,14 +56,7 @@ class ButtonGroupSection extends StatelessWidget {
       width: 280,
       child: ButtonGroupM3E(
         actions: [
-          for (final label in [
-            'One',
-            'Two',
-            'Three',
-            'Four',
-            'Five Button',
-            'Six'
-          ])
+          for (final label in ['One', 'Two', 'Three', 'Four', 'Five', 'Six'])
             ButtonGroupM3EAction(label: Text(label), onPressed: () {}),
         ],
       ),
@@ -97,10 +98,10 @@ class ButtonGroupSection extends StatelessWidget {
       child: ButtonGroupM3E(
         type: ButtonGroupM3EType.connected,
         dividerColor: Theme.of(context).colorScheme.outlineVariant,
-        style: ButtonM3EStyle.tonal,
         actions: [
           for (final label in ['Low', 'Med', 'High'])
             ButtonGroupM3EAction(
+              style: ButtonM3EStyle.tonal,
               label: Text(label),
               onPressed: () {},
             ),
@@ -136,15 +137,9 @@ class ButtonGroupSection extends StatelessWidget {
         dividerColor: Theme.of(context).colorScheme.outlineVariant,
         style: ButtonM3EStyle.tonal,
         actions: [
-          for (final label in [
-            'One',
-            'Two',
-            'Three',
-            'Four',
-            'Five Button',
-            'Six'
-          ])
+          for (final label in ['One', 'Two', 'Three', 'Four', 'Five', 'Six'])
             ButtonGroupM3EAction(
+              style: ButtonM3EStyle.tonal,
               label: Text(label),
               onPressed: () {},
             ),
@@ -163,6 +158,33 @@ class ButtonGroupSection extends StatelessWidget {
             ButtonGroupM3EAction(label: Text(label), onPressed: () {}),
         ],
       ),
+    );
+  }
+
+  Widget _demoAlignedCenter(BuildContext context) {
+    return ButtonGroupM3E(
+      expanded: true,
+      linearMainAxisAlignment: MainAxisAlignment.center,
+      actions: const [
+        ButtonGroupM3EAction(label: Text('Center 1')),
+        ButtonGroupM3EAction(label: Text('Center 2')),
+        ButtonGroupM3EAction(label: Text('Center 3')),
+      ],
+    );
+  }
+
+  Widget _demoAlignedRight(BuildContext context) {
+    return ButtonGroupM3E(
+      expanded: true,
+      linearMainAxisAlignment: MainAxisAlignment.end,
+      overflow: ButtonGroupM3EOverflow.menu,
+      actions: const [
+        ButtonGroupM3EAction(label: Text('Right 1')),
+        ButtonGroupM3EAction(label: Text('Right 2')),
+        ButtonGroupM3EAction(label: Text('Right 3')),
+        ButtonGroupM3EAction(label: Text('Right 4')),
+        ButtonGroupM3EAction(label: Text('Right 5')),
+      ],
     );
   }
 }

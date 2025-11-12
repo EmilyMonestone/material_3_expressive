@@ -98,6 +98,8 @@ class ButtonGroupM3E extends StatefulWidget {
     this.selection = false,
     this.selectedIndex,
     this.overflowMenuStyle = ButtonGroupM3EOverflowMenuStyle.dropdown,
+    this.expanded = false,
+    this.linearMainAxisAlignment,
   });
 
   /// Declarative actions to build buttons. Overrides [children] when not empty.
@@ -145,6 +147,13 @@ class ButtonGroupM3E extends StatefulWidget {
 
   /// How to display the overflow menu when [overflow] == menu. Defaults to dropdown.
   final ButtonGroupM3EOverflowMenuStyle overflowMenuStyle;
+
+  /// When true, Row/Column uses MainAxisSize.max enabling internal end alignment.
+  final bool expanded;
+
+  /// Explicit mainAxis alignment for non-wrap (Row/Column) layouts.
+  /// If null falls back to mapping of [alignment] (WrapAlignment) for convenience.
+  final MainAxisAlignment? linearMainAxisAlignment;
 
   bool get _connected => type == ButtonGroupM3EType.connected;
 
@@ -270,14 +279,23 @@ class _ButtonGroupM3EState extends State<ButtonGroupM3E> {
     final list = _buildItemList(
         context, spacing, dividerColor, dividerThickness,
         count: _effectiveActions.length);
+
+    final mainAlign =
+        widget.linearMainAxisAlignment ?? _mapWrapToMain(widget.alignment);
+    final mainSize = widget.expanded ? MainAxisSize.max : MainAxisSize.min;
+
     return widget.direction == Axis.horizontal
         ? Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: mainSize,
+            mainAxisAlignment:
+                widget.expanded ? mainAlign : MainAxisAlignment.start,
             crossAxisAlignment: _mapCross(widget.crossAxisAlignment),
             children: list,
           )
         : Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: mainSize,
+            mainAxisAlignment:
+                widget.expanded ? mainAlign : MainAxisAlignment.start,
             crossAxisAlignment: _mapCross(widget.crossAxisAlignment),
             children: list,
           );
@@ -289,6 +307,10 @@ class _ButtonGroupM3EState extends State<ButtonGroupM3E> {
     final list = _buildItemList(
         context, spacing, dividerColor, dividerThickness,
         count: _effectiveActions.length);
+
+    final mainAlign =
+        widget.linearMainAxisAlignment ?? _mapWrapToMain(widget.alignment);
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final isBounded = widget.direction == Axis.horizontal
@@ -297,12 +319,18 @@ class _ButtonGroupM3EState extends State<ButtonGroupM3E> {
 
         final core = widget.direction == Axis.horizontal
             ? Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize:
+                    widget.expanded ? MainAxisSize.max : MainAxisSize.min,
+                mainAxisAlignment:
+                    widget.expanded ? mainAlign : MainAxisAlignment.start,
                 crossAxisAlignment: _mapCross(widget.crossAxisAlignment),
                 children: list,
               )
             : Column(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize:
+                    widget.expanded ? MainAxisSize.max : MainAxisSize.min,
+                mainAxisAlignment:
+                    widget.expanded ? mainAlign : MainAxisAlignment.start,
                 crossAxisAlignment: _mapCross(widget.crossAxisAlignment),
                 children: list,
               );
@@ -444,17 +472,25 @@ class _ButtonGroupM3EState extends State<ButtonGroupM3E> {
         }
 
         final coreChildren = visibleList;
+        final mainAlign =
+            widget.linearMainAxisAlignment ?? _mapWrapToMain(widget.alignment);
         final core = widget.direction == Axis.horizontal
             ? ClipRect(
                 child: Row(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisSize:
+                      widget.expanded ? MainAxisSize.max : MainAxisSize.min,
+                  mainAxisAlignment:
+                      widget.expanded ? mainAlign : MainAxisAlignment.start,
                   crossAxisAlignment: _mapCross(widget.crossAxisAlignment),
                   children: coreChildren,
                 ),
               )
             : ClipRect(
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisSize:
+                      widget.expanded ? MainAxisSize.max : MainAxisSize.min,
+                  mainAxisAlignment:
+                      widget.expanded ? mainAlign : MainAxisAlignment.start,
                   crossAxisAlignment: _mapCross(widget.crossAxisAlignment),
                   children: coreChildren,
                 ),
@@ -765,6 +801,15 @@ class _ButtonGroupM3EState extends State<ButtonGroupM3E> {
     }
   }
 
+  MainAxisAlignment _mapWrapToMain(WrapAlignment w) => switch (w) {
+        WrapAlignment.start => MainAxisAlignment.start,
+        WrapAlignment.end => MainAxisAlignment.end,
+        WrapAlignment.center => MainAxisAlignment.center,
+        WrapAlignment.spaceBetween => MainAxisAlignment.spaceBetween,
+        WrapAlignment.spaceAround => MainAxisAlignment.spaceAround,
+        WrapAlignment.spaceEvenly => MainAxisAlignment.spaceEvenly,
+      };
+
   Widget _buildOverflowTrigger(
     BuildContext context,
     double spacing,
@@ -830,7 +875,6 @@ class _ButtonGroupM3EState extends State<ButtonGroupM3E> {
     _removeOverflowEntry();
 
     final overlay = Overlay.of(context, rootOverlay: true);
-    if (overlay == null) return;
 
     _overflowEntry = OverlayEntry(
       builder: (ctx) {

@@ -1,6 +1,6 @@
 name: m3e_collection
 description: Aggregated exports of all Material 3 Expressive components for Flutter.
-version: 0.3.6
+version: 0.3.7
 repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/m3e_collection
 issue_tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
 
@@ -9,7 +9,7 @@ environment:
 
 dependencies:
   app_bar_m3e: ^0.1.2
-  button_group_m3e: ^0.3.0
+  button_group_m3e: ^0.3.1
   button_m3e: ^0.1.2
   expressive_refresh: ^0.1.2
   fab_m3e: ^0.1.1
