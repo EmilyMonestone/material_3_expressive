@@ -190,15 +190,25 @@ Widget buildButtonGroupM3EDefaultUseCase(BuildContext context) {
     labelBuilder: (String v) => v,
   );
 
-  late final List<Widget> children;
+  late final List<ButtonGroupM3EAction> actions;
   switch (contentMode) {
     case 'with_icon':
-      children = _demoButtonsWithIcons(context);
+      actions = _demoButtonsWithIcons(context)
+          .map((b) => ButtonGroupM3EAction(
+              label: (b as ButtonM3E).label,
+              icon: b.icon,
+              onPressed: b.onPressed,
+              style: b.style))
+          .toList();
       break;
     default:
-      children = _demoButtonsWithLabels(context);
+      actions = _demoButtonsWithLabels(context)
+          .map((b) => ButtonGroupM3EAction(
+              label: (b as ButtonM3E).label,
+              onPressed: b.onPressed,
+              style: b.style))
+          .toList();
   }
-
   return Center(
     child: ButtonGroupM3E(
       type: type,
@@ -218,7 +228,7 @@ Widget buildButtonGroupM3EDefaultUseCase(BuildContext context) {
       equalizeWidths: equalizeWidths,
       semanticLabel: semanticLabel,
       clipBehavior: clip,
-      children: children,
+      actions: actions,
     ),
   );
 }
@@ -236,7 +246,12 @@ Widget buildButtonGroupM3EConnectedUseCase(BuildContext context) {
         label: 'equalizeWidths',
         initialValue: false,
       ),
-      children: _demoButtonsWithLabels(context),
+      actions: _demoButtonsWithLabels(context)
+          .map((b) => ButtonGroupM3EAction(
+              label: (b as ButtonM3E).label,
+              onPressed: b.onPressed,
+              style: b.style))
+          .toList(),
     ),
   );
 }
@@ -257,7 +272,12 @@ Widget buildButtonGroupM3EVerticalUseCase(BuildContext context) {
         max: 32,
         divisions: 32,
       ),
-      children: _demoButtonsWithLabels(context),
+      actions: _demoButtonsWithLabels(context)
+          .map((b) => ButtonGroupM3EAction(
+              label: (b as ButtonM3E).label,
+              onPressed: b.onPressed,
+              style: b.style))
+          .toList(),
     ),
   );
 }
@@ -271,13 +291,17 @@ Widget buildButtonGroupM3EWrappedManyItemsUseCase(BuildContext context) {
     max: 40,
     divisions: 40,
   );
-  final List<Widget> items = List<Widget>.generate(count, (int i) {
-    return OutlinedButton(
-      onPressed: () => debugPrint('Pressed: Item #$i'),
-      child: Text('Item $i'),
-    );
-  });
-
+  final List<ButtonGroupM3EAction> actions =
+      List<ButtonGroupM3EAction>.generate(
+    count,
+    (int i) {
+      return ButtonGroupM3EAction(
+        label: Text('Item $i'),
+        onPressed: () => debugPrint('Pressed: Item #$i'),
+        style: ButtonM3EStyle.outlined,
+      );
+    },
+  );
   return Center(
     child: SizedBox(
       width: 360,
@@ -305,7 +329,7 @@ Widget buildButtonGroupM3EWrappedManyItemsUseCase(BuildContext context) {
         alignment: _knobWrapAlignment(context, label: 'alignment'),
         runAlignment: _knobWrapAlignment(context, label: 'runAlignment'),
         crossAxisAlignment: _knobCrossAlignment(context),
-        children: items,
+        actions: actions,
       ),
     ),
   );
@@ -313,21 +337,20 @@ Widget buildButtonGroupM3EWrappedManyItemsUseCase(BuildContext context) {
 
 @UseCase(name: 'equalized_long_text', type: ButtonGroupM3E)
 Widget buildButtonGroupM3EEqualizedLongTextUseCase(BuildContext context) {
-  final List<Widget> children = <Widget>[
-    ElevatedButton(
-      onPressed: () => debugPrint('Pressed: Very long primary label'),
-      child: const Text('Very long primary label'),
-    ),
-    OutlinedButton(
-      onPressed: () => debugPrint('Pressed: Short'),
-      child: const Text('Short'),
-    ),
-    TextButton(
-      onPressed: () => debugPrint('Pressed: Mid length'),
-      child: const Text('Mid length'),
-    ),
+  final actions = <ButtonGroupM3EAction>[
+    ButtonGroupM3EAction(
+        label: const Text('Very long primary label'),
+        onPressed: () => debugPrint('Pressed: Very long primary label'),
+        style: ButtonM3EStyle.filled),
+    ButtonGroupM3EAction(
+        label: const Text('Short'),
+        onPressed: () => debugPrint('Pressed: Short'),
+        style: ButtonM3EStyle.outlined),
+    ButtonGroupM3EAction(
+        label: const Text('Mid length'),
+        onPressed: () => debugPrint('Pressed: Mid length'),
+        style: ButtonM3EStyle.text),
   ];
-
   return Center(
     child: ButtonGroupM3E(
       type: _knobType(context),
@@ -335,17 +358,14 @@ Widget buildButtonGroupM3EEqualizedLongTextUseCase(BuildContext context) {
       size: _knobSize(context),
       density: _knobDensity(context),
       equalizeWidths: true,
-      children: children,
+      actions: actions,
     ),
   );
 }
 
 @UseCase(name: 'empty', type: ButtonGroupM3E)
 Widget buildButtonGroupM3EEmptyUseCase(BuildContext context) {
-  // Boundary: no children → should layout to zero size.
-  return const Center(
-    child: ButtonGroupM3E(children: <Widget>[]),
-  );
+  return const Center(child: ButtonGroupM3E(actions: <ButtonGroupM3EAction>[]));
 }
 
 @UseCase(name: 'with_icon', type: ButtonGroupM3E)
@@ -357,7 +377,13 @@ Widget buildButtonGroupM3EWithIconUseCase(BuildContext context) {
       size: _knobSize(context),
       density: _knobDensity(context),
       direction: _knobDirection(context),
-      children: _demoButtonsWithIcons(context),
+      actions: _demoButtonsWithIcons(context)
+          .map((b) => ButtonGroupM3EAction(
+              label: (b as ButtonM3E).label,
+              icon: b.icon,
+              onPressed: b.onPressed,
+              style: b.style))
+          .toList(),
     ),
   );
 }

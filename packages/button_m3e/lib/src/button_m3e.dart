@@ -19,6 +19,7 @@ class ButtonM3E extends StatefulWidget {
     this.smallPaddingDeprecated24 = false,
     this.enabled = true,
     this.statesController,
+    this.cornerRadiusOverride, // new optional per-corner override for square shapes
   });
 
   final VoidCallback? onPressed;
@@ -33,6 +34,7 @@ class ButtonM3E extends StatefulWidget {
   final bool smallPaddingDeprecated24;
   final bool enabled;
   final WidgetStatesController? statesController;
+  final BorderRadius? cornerRadiusOverride;
 
   @override
   State<ButtonM3E> createState() => _ButtonM3EState();
@@ -165,12 +167,17 @@ class _ButtonM3EState extends State<ButtonM3E> {
     final selected = states.contains(WidgetState.selected) || widget.selected;
     final pressed = states.contains(WidgetState.pressed);
 
+    final BorderRadius squareBaseRadius = widget.cornerRadiusOverride ??
+        BorderRadius.circular(tokens.squareRadius(widget.size));
+    final BorderRadius pressedSquareRadius = widget.cornerRadiusOverride ??
+        BorderRadius.circular(tokens.pressedRadius(widget.size));
+
     OutlinedBorder round = const StadiumBorder();
     OutlinedBorder square = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(tokens.squareRadius(widget.size)),
+      borderRadius: squareBaseRadius,
     );
     OutlinedBorder pressedSquare = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(tokens.pressedRadius(widget.size)),
+      borderRadius: pressedSquareRadius,
     );
 
     OutlinedBorder base = widget.shape == ButtonM3EShape.round ? round : square;

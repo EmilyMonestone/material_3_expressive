@@ -1,7 +1,6 @@
-
 name: button_m3e
 description: Material 3 Expressive Buttons for Flutter with 5 styles, 5 sizes, round/square shapes, and toggle selection.
-version: 0.1.1
+version: 0.1.2
 repository: https://github.com/EmilyMoonstone/material_3_expressive/tree/main/packages/button_m3e
 issue_tracker: https://github.com/EmilyMonestone/material_3_expressive/issues
 

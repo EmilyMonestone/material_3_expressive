@@ -2,3 +2,5 @@
 dependency_overrides:
   m3e_design:
     path: ..\\m3e_design
+  button_m3e:
+    path: ..\\button_m3e
